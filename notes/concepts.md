@@ -133,6 +133,35 @@ verbose" has nowhere to go. Worth discussing as a deliberate simplicity
 trade-off when designing any lightweight eval-logging format: strictness
 of the schema vs. richness of what it can express.
 
+## Coverage set vs. challenge set (synthetic eval datasets)
+
+When building a test set of scenarios/conversations for an agent, split it
+into two labeled pools rather than one mixed pile:
+
+- **Coverage set** — the everyday range of ordinary requests, spread across
+  every important way requests vary (role, intent, record state, etc.),
+  including routine edge values (e.g. a request that happens to land right
+  at a normal threshold — that's still ordinary, since real users hit
+  thresholds all the time).
+- **Challenge set** — cases built *on purpose* to be hard: missing
+  information, a correction mid-conversation, a rule that overrides the
+  default, a permission boundary, deliberately broken/damaged data.
+
+**Why separate them instead of reporting one blended score:** a dataset
+that's 90% easy requests can score 95% "correct" overall even while
+completely failing every hard edge case — the failures get diluted into
+invisibility by the easy majority. Reporting the two pools separately
+keeps the coverage score honest (closer to real-world performance) and
+surfaces the challenge score as its own, usually much less flattering,
+number — which is exactly where the interesting failures live.
+
+**Caveat:** because the challenge set is deliberately loaded with hard
+cases, its failure rate will look worse than real production traffic would
+show — that's intentional (you're hunting for failure modes on purpose),
+not a claim about how often the system fails in general. Don't quote a
+challenge-set failure rate as if it were an overall production failure
+rate.
+
 ## Vibe-coding a custom annotation UI vs. the platform's generic one
 
 A generic annotation UI (Langfuse's default trace/review view, or any
@@ -182,6 +211,25 @@ mirrors to Quay) before assuming the compose file itself is broken.
 Pinning to a specific release tag (rather than `:latest`) reduces surprise
 but doesn't eliminate this class of failure — the whole tag lineage can
 still get pulled.
+
+## Practical gotcha: regenerating an input file doesn't retract past runs
+
+If a batch job (running scenarios/queries/prompts against a live system)
+gets interrupted partway and the input file is then regenerated with new
+random selections, any records already produced from the *old* version
+still exist in whatever store received them — a trace store, a database,
+a log. If those records are later joined back by an id that both file
+versions happen to share (e.g. `scenario_007` in both the old and new
+file, now pointing at different underlying content), a naive export can
+silently merge the stale and the correct output under one id. Before
+trusting such a join: filter by a timestamp cutoff at the restart point,
+or use a fresh id namespace per attempt, and verify per-id result counts
+against what the *current* input structurally expects.
+
+Related, smaller gotcha: seeding one random-number generator (e.g.
+Python's `random.seed(...)`) does not seed a *different* one in the same
+pipeline (e.g. a database's own `RANDOM()` in a SQL query) — each needs
+its own seed if determinism matters end to end.
 
 ## References
 
