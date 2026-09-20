@@ -198,6 +198,201 @@ rendering needs actually justify it.
 
 An in-chat feedback button/textbox is a useful triage signal (which traces to prioritize reviewing) but measures user *sentiment*, not correctness — it can't replace expected-result checks grounded in the database/policy docs, since a user can be happy with a wrong answer or unhappy with a correct one.
 
+## Sampling for review: uniform vs. cluster representatives
+
+When picking which records to read first out of a large store, mix two
+complementary strategies rather than relying on either alone:
+
+- **Uniform (random) sampling** — every record has an equal chance of
+  being picked, no clustering involved. Catches whatever a clustering
+  scheme's chosen dimensions fail to capture — it doesn't know what it's
+  missing, but neither does anything else.
+- **Cluster representatives** — group records by structural similarity
+  (for traces: turn count, tool-call count, which tools were used,
+  retrieval presence, token totals) via k-means or similar, then pick one
+  or two records closest to each cluster's center. This guarantees at
+  least one example of every distinct *kind* of record in the store, even
+  a rare kind that a random sample of the same size would likely miss
+  entirely (an unusually long conversation might be 2% of the store —
+  random sampling alone would rarely surface it; a cluster representative
+  always does).
+
+Combine both in the first reading batch: uniform sampling gives an
+unbiased read on what's typical, cluster representatives guarantee
+coverage of what's rare-but-real, and reading only one or the other biases
+what failure modes you'll even notice exist. This is the mechanism behind
+this project's `select_traces(strategy="diversity")` — it mixes roughly
+two-thirds cluster representatives with one-third random picks under one
+call.
+
+## Generalization failure vs. specification/tooling gap
+
+When a trace shows the agent got something wrong, ask *could it have gotten
+this right with what it already had?* before deciding what kind of failure
+it is — the answer changes what the fix looks like.
+
+- **Generalization failure** — the agent had everything it needed (the
+  right tool existed and returned the right data) and still produced the
+  wrong answer. Fix: prompt or model change.
+- **Specification/tooling gap** — no available tool could have surfaced
+  the fact needed to answer correctly, or the spec never said what correct
+  behavior even is. Fix: add/change a tool, fix the underlying data, or
+  write the missing requirement — not a prompt edit, since no prompt can
+  make a model check a fact it has no way to retrieve.
+
+Concrete test: list the tools the agent actually has, and check whether
+*any* combination of calls could have produced the correct fact. If not,
+it's a tooling gap, not a model failure, and belongs in the taxonomy (if at
+all) with a different fix attached and a different implication for whether
+an LLM judge could ever catch it — a judge only checking the agent's
+*output* can't distinguish "didn't try" from "couldn't have known."
+
+## Two error-discovery methods are complementary, not either/or
+
+Human open coding (reading transcripts against expected outcomes) and a
+tool-assisted execution-level pass (e.g. a trace debugger's coding-agent
+integration inspecting raw model activity and tool calls) are easy to treat
+as competing options for finding failure modes. They aren't — they look at
+the same underlying runs from two different levels and tend to catch
+different things:
+
+- **Open coding** reads at the *conversation* level. It's grounded and
+  precise (a human checking actual behavior against an actual requirement),
+  but limited to whatever a reader's attention catches while skimming
+  transcript text across a large batch.
+- **Execution-level tool inspection** reads at the *raw activity* level —
+  tool-call arguments, sequencing, retries, timing — things that may never
+  surface in a transcript's flattened text view even when they're symptoms
+  of a real problem (a redundant call, an argument that doesn't match what
+  the final reply implies).
+
+The load-bearing design choice: treat the tool-assisted pass's output as
+*hypotheses*, not labels. It runs on a much smaller sample (single digits vs.
+the 100+ traces open coding covers) and a different reviewer (a coding
+agent, not the human) is doing the first-pass noticing — so every suggestion
+still needs the human to inspect the actual trace and decide accept/revise/
+reject before it affects a taxonomy. This keeps the "human decides, tooling
+proposes/scales" division intact even when the source of proposals changes.
+
+## Human-first, then agent, is about sequencing trust — not which tool
+
+Beyond this repo's specific tools: a general (if still emerging, not yet a
+long-settled industry standard) practice in LLM/agent evaluation is to have
+a human review traces and build a failure taxonomy *before* letting an
+agent or LLM review the same population, rather than the other way around
+or skipping the human pass entirely.
+
+The reason is about where ground truth comes from, not which tool is more
+capable. Only a human can anchor a taxonomy in what actually matters — the
+spec, business judgment, which deviations are real failures vs. acceptable
+variance. An agent reviewing cold has no such anchor: it will still produce
+plausible-sounding categories, but with nothing to calibrate against, so
+there's no way to tell a real finding from a hallucinated one. Once a
+human-grounded taxonomy exists, a second automated/agentic pass — ideally
+from a different vantage point (e.g. execution-level tool-call inspection
+vs. conversational-transcript reading; see "Two error-discovery methods are
+complementary" above) — is genuinely useful for finding gaps the human's
+sampling or reading style missed. But its output stays a hypothesis to be
+individually verified, never a label accepted on its own authority.
+
+This is the same "human decides, tooling proposes/scales" split worth
+naming explicitly as its own principle: the *order* (human first to
+establish ground truth, automation second to generate candidates against
+it) and the *epistemic status* of the second pass (hypotheses, not labels)
+are what make this work — not the specific tool doing the second pass. The
+same shape would hold with any two independently-instrumented review
+methods, same tool or different.
+
+(Related: Hamel Husain's error-analysis writeup, linked in References below,
+argues directly against automating failure discovery before a human
+understands the failures themselves.)
+
+## Record an explicit outcome for every automated suggestion
+
+A practical mechanism for actually enforcing "human decides, agent
+proposes" (see "Human-first, then agent" above): for every individual
+suggestion an automated/agentic pass produces, write down one of accept /
+revise / reject, with a one-line reason, at the point of decision — not just
+a summary verdict on the pass as a whole.
+
+Without this, a suggestion can silently become a decision simply by sitting
+unchallenged in a notes file, or a genuinely good suggestion can get lost by
+never being revisited. Writing "accepted — became mode X" or "rejected —
+re-ran N times, turned out to be Y" for each one, individually, creates an
+audit trail: anyone reading it later can see exactly what was proposed, what
+was actually checked, and why it did or didn't survive — without having to
+reconstruct that reasoning from memory or from what the taxonomy happens to
+look like afterward.
+
+Concrete version of this from Homework 4 Part C: every Raindrop Workshop
+suggestion in `analysis/report/workshop_notes.md` got its own `**Outcome:
+...**` line (accepted into a new mode, accepted as corroboration of an
+existing one, rejected after re-running the scenario showed it wasn't a
+real pattern, or left out entirely for lacking ground truth to judge it
+against) — four suggestions, four independent, individually-justified
+outcomes, rather than one blanket "reviewed Workshop's findings" statement.
+
+## Finalizing a taxonomy: why every mode needs positive *and* close-negative examples
+
+Once open coding (and any second-pass tool-assisted review) has produced a
+set of candidate failure modes, turning them into a *usable* taxonomy takes
+more than writing each one down with one example. A repeatable sequence:
+
+1. Sweep every annotation not yet linked to a mode and check it against the
+   current definitions — this is where most of a mode's examples actually
+   come from, not from the one or two traces that first suggested it.
+2. Get each mode to several (e.g. ≥3) confirmed **positive** examples —
+   traces that clearly contain the failure.
+3. Find several **close-negative** examples per mode — traces that look
+   similar on the surface but don't actually contain the failure.
+4. Check merge/split: would one product change fix two modes' examples at
+   once (merge candidate)? Do one mode's examples actually need different
+   fixes (split candidate)?
+5. For each surviving mode, record its boundary, evaluator type (checkable
+   from the trace text alone, or does it need tool-result ground truth?),
+   and requirement source (a spec id, or "human judgment").
+
+**Why both positive and close-negative examples, not just positive ones:** a
+mode's text definition alone is inherently fuzzy at the edges — natural
+language always has gray areas. A single positive example anchors "yes,
+this counts," but a reader (or a later LLM judge) has no way to tell which
+of that example's details are the actual rule versus incidental surface
+detail, and no sense of where the category *stops*. A close-negative
+example — something that resembles the failure but doesn't cross the line —
+is what actually marks the boundary; without one, both a human and a judge
+default to pattern-matching on surface similarity and over-fire on
+lookalikes. Several examples of each (not one) matter for the same reason
+few-shot examples matter for any classifier: one example risks the reader
+generalizing from an incidental feature of that single case rather than the
+real invariant. This directly feeds Homework 5: an LLM judge built from a
+fuzzy category with no boundary examples will systematically over- or
+under-fire, no matter how well-written its prompt otherwise is.
+
+**What "evaluator type" and "requirement source" mean, and why record them
+per mode:**
+
+- **Evaluator type** answers: what does checking this mode actually require
+  — the final reply text alone, or also the tool-call trace and/or outside
+  ground truth? Two rough buckets show up in practice: modes checkable from
+  reply text alone (e.g. does it leak an internal field name, does it keep
+  talking after a refusal), and modes that need more — either the correct
+  answer isn't derivable from the reply itself (e.g. checking a policy
+  citation is *correct*, not just present, requires knowing what should have
+  been cited), or the failure only shows up in the tool-call sequence, not
+  the final message (e.g. redundant tool calls, whether escalate_to_human
+  was actually invoked). This isn't just documentation — it determines what
+  data has to go into that mode's judge prompt in Homework 5. A judge fed
+  only the final reply cannot possibly catch a mode whose evidence lives in
+  the tool calls, no matter how well the prompt is written.
+- **Requirement source** answers: is this mode enforcing something the spec
+  actually says (a numbered requirement id, e.g. `RESP-1`), or is it a
+  human-judgment quality bar the review surfaced with no written backing?
+  Both are legitimate modes, but the distinction matters for accountability
+  — a spec-backed mode is enforcing an explicit product decision, while an
+  unbacked one is the reviewer's own judgment call about quality, which is
+  worth being honest about rather than implying every mode traces back to a
+  written rule.
+
 ## Practical gotcha: self-hosted Docker images going stale
 
 Reference `docker-compose.yml` files for observability stacks (Langfuse
@@ -231,6 +426,44 @@ Python's `random.seed(...)`) does not seed a *different* one in the same
 pipeline (e.g. a database's own `RANDOM()` in a SQL query) — each needs
 its own seed if determinism matters end to end.
 
+## The AgentDebug / AgentErrorTaxonomy published taxonomy
+
+A useful outside reference point when finalizing your own taxonomy (Homework
+4 Part D asks you to compare against it): "Where LLM Agents Fail and How
+They Can Learn From Failures" ([arXiv:2509.25370](https://arxiv.org/abs/2509.25370))
+proposes **AgentDebug**, a debugging framework built on a taxonomy it calls
+**AgentErrorTaxonomy** — 5 top-level dimensions, 17 specific leaf-level
+failure modes, derived empirically from annotated failure trajectories
+across three general-purpose agent benchmarks (ALFWorld, GAIA, WebShop):
+
+- **Memory** (3): over-simplified/incomplete summary of past info,
+  hallucinated (false) memory, retrieval failure (info existed but wasn't
+  retrieved when needed).
+- **Reflection** (4): misassessing progress, misinterpreting an action's
+  outcome, correctly noticing a failure but blaming the wrong cause,
+  hallucinating a reflection on events that never happened.
+- **Planning** (3): ignoring constraints (time/budget/etc.), planning an
+  impossible step, inefficient/wasteful planning.
+- **Action** (3): plan-action disconnect (the action taken doesn't match
+  the stated intent), malformed/invalid action format, bad/unreasonable
+  parameters.
+- **System-level** (4): step-limit exhaustion, tool/API execution errors,
+  LLM/model limits (timeouts, token caps), environment bugs unrelated to
+  the agent.
+
+Since this taxonomy is general-purpose (built for tool-using agents
+broadly, not customer support specifically), the useful comparison isn't
+"does every category exist in mine" — most won't map cleanly (their
+Memory/Reflection dimensions assume long multi-step reasoning most
+short-conversation support scenarios don't exercise). The actual value is
+narrower: does the published taxonomy name a real failure category your own
+open coding might have missed, given what it actually surfaced? Their
+Action/Parameter-Error and Planning/Inefficient-Planning categories, for
+example, map fairly directly onto failure modes a review of a tool-using
+agent would likely also surface independently — which is itself a useful
+sanity check that your own taxonomy isn't missing something structural.
+
 ## References
 
 - [Hamel Husain: Why is error analysis so important in LLM evals, and how is it performed?](https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html) — relevant to the open-coding/failure-taxonomy work in Homework 4.
+- [Where LLM Agents Fail and How They Can Learn From Failures (AgentDebug / AgentErrorTaxonomy)](https://arxiv.org/abs/2509.25370) — the published taxonomy Homework 4 Part D asks you to compare your own against.

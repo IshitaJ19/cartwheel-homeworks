@@ -1,1 +1,402 @@
-{"modes": []}
+{
+  "missing_policy_citation": {
+    "definition": "Agent reaches the correct decision (e.g. deny a refund) but does not cite the specific policy/store-override document that supports it.",
+    "status": "candidate",
+    "count": 3,
+    "example_trace_ids": [
+      "07025a9da0e849a436a3807a9f816468",
+      "28e56695ec9002599641df671a509e40",
+      "8cf5f83044ae87d42ddbd13d1d8f93ba"
+    ],
+    "example_quotes": [
+      "It denied the refund but did not cite store-specific policy override",
+      "did not cite the right store policy",
+      "did not cite the store override policy name"
+    ],
+    "created_from": [
+      "a1789675326683321",
+      "a1789703045951960",
+      "a1789876289581919"
+    ],
+    "close_negative_trace_ids": [
+      "190f1150e26918171e7e2fc33fc98be8",
+      "64ddd033739aabdd5c7d3a324ed96a59",
+      "a9dcf9417f103fe1969d9d8feee8b661",
+      "3501e41569787486b2572de37fb9a315"
+    ],
+    "close_negative_notes": [
+      "support-0101: return-window question answered correctly and cites cw-returns by name.",
+      "support-0102: same question phrasing, same correct citation.",
+      "support-0103: same question phrasing, same correct citation.",
+      "support-0104: same question phrasing, same correct citation."
+    ],
+    "requirement_source": "SPEC.md RESP-1 (\"Cite the policy identifier for every claim derived from a policy document\")",
+    "evaluator_type": "Needs tool-result ground truth: requires knowing which policy_id was actually retrieved/applicable (from get_policy/search_help_center results), not just pattern-matching the reply text."
+  },
+  "ignores_data_quality_anomaly": {
+    "definition": "Agent fails to escalate a data-quality anomaly -- a missing required field (e.g. a null delivery date) or an inconsistent/unreconciled field (e.g. mismatched store/product, an impossible ship-after-deliver date order, an invalid negative price) -- instead treating the record as trustworthy enough to answer from directly. Hedging alone (flagging the anomaly in the reply without calling escalate_to_human) is not sufficient by itself -- escalation is the required corrective action. Reconciling the underlying data itself is out of scope for the agent.",
+    "status": "candidate",
+    "count": 21,
+    "example_trace_ids": [
+      "00584a2112f7f68c312f63af6a2421a2",
+      "1eccd5e1046af403839ec542e265fe34",
+      "f69a9bc335e92e9bdb34d7ef83bc32b8",
+      "eb047c1eb24d10c0d6ccdf8fa06a9e9c",
+      "866e12de7973f0c0ab1ef34b0a328ac2",
+      "d8a80ad3e1ee404fda0bc2d5dbe60906",
+      "29452ed261e7c44aca7b639e14949053",
+      "5a4d98c0acb4e2aa65a5e12d8c03c8ba",
+      "4c6ea60702345067305067fdaad8e52c",
+      "133d7db49a814ef2799aa6c86695d4b8",
+      "2b8f1647f9bacb9ac258b34de0848b58",
+      "016dc2e3fe3389c2af9c5fb2e7a67810",
+      "6d3b8c617bd1b5a67230a8ed780bbbf1",
+      "2b29f8ee979853ca73be2b400b882cb8",
+      "387e6b400ae4af4abb8d62ac154c51c5",
+      "0388019828e0e118597859232b184af8",
+      "22566c1a8e0ea6bb197971b2569719f0",
+      "65bc378e86eeba3aabc4cda949daa6b8",
+      "1b88f39dd361ce00bbb93b6ff0a8d483",
+      "e42d06914fa6a16c59de7e193bf95929",
+      "68c0b612c675a7a472554e8f46a8c354"
+    ],
+    "example_quotes": [
+      "Did not identify data discrepancy.",
+      "This has a specification gap because there is no tool or way for the agent to know there's a product/store mismatch.",
+      "this order lists a product that does not belong to the listed store",
+      "agent assumed all returned products with the same title belonged to the same store without checking store identifiers.",
+      "Product-store mismatch",
+      "inconsistent order/shipping/delivery dates - data quality issues should not be relied upon and should be identified and escalated",
+      "agent currently flagged missing delivery date, but needs to escalate to human for data quality issues",
+      "inconsistent order/shipping/delivery dates - data quality issues should not be relied upon and should be identified and escalated",
+      "missing delivery date was identified but should've been escalated",
+      "Product-store mismatch",
+      "Escalate for missing critical data",
+      "Product-store mismatch",
+      "Didn't even mention the missing delivery date. Missing data should've been escalated",
+      "inconsistent order/shipping/delivery dates - data quality issues should not be relied upon and should be identified and escalated",
+      "Extremely verbose response, date inconsistency should be escalated",
+      "Agent did not notice that this order was not a green mug. Should've noticed the discrepancy and maybe escalated",
+      "Listed negative price as a fact",
+      "Listed negative price as a fact",
+      "negative price",
+      "Listed negative price as a fact",
+      "should not have stated refund_eligible as False without the delivery date being present"
+    ],
+    "created_from": [
+      "a1789675566936468",
+      "a1789677125294453",
+      "a1789706937010316",
+      "a1789707577159642",
+      "a1789707935837373",
+      "a1789707453437683",
+      "a1789707523966912",
+      "a1789708153673219",
+      "a1789708190029191",
+      "a1789708217718953",
+      "a1789708307189669",
+      "a1789708322856259",
+      "a1789708366336516",
+      "a1789708430400648",
+      "a1789708674815170",
+      "a178974534037993",
+      "a1789707954055983",
+      "a1789708016328473",
+      "a1789708125021638",
+      "a1789708336474237",
+      "a1789708113083284"
+    ],
+    "close_negative_trace_ids": [
+      "06ab0399d57c02efeecb26b477add8b4",
+      "28ba14f1bf58907a7d3d69c9770e79df",
+      "2609195ae1bcca68b3b0b0e0f84438ad"
+    ],
+    "close_negative_notes": [
+      "re-run of the negative-price scenario: agent escalated to a human to verify the price instead of presenting it as fact.",
+      "same scenario, same correct escalation.",
+      "same scenario, same correct escalation."
+    ],
+    "requirement_source": "SPEC.md RESP-3 (\"State when required information is missing or inconsistent, rather than inventing a value\") + the seeded data_quality_cases table as ground truth for which records are damaged.",
+    "evaluator_type": "Objectively checkable from the tool-call trace alone: does the order/product match a known data_quality_cases entry, and was escalate_to_human called. No text-quality judgment needed."
+  },
+  "leaks_internal_terminology": {
+    "definition": "Agent surfaces raw internal field/variable names (e.g. refund_eligible) to the customer rather than translating them into plain language. Citing a policy id (RESP-1) is not itself a violation of this mode.",
+    "status": "candidate",
+    "count": 14,
+    "example_trace_ids": [
+      "072a3ce845734da73169f490d3591490",
+      "68c0b612c675a7a472554e8f46a8c354",
+      "1d31e1c26fe42965f2bfd4ecc05732f8",
+      "live-3b8349bbfda947c0a8bf016a49335083",
+      "0f2e5fc9d73c27e015b4f67697d5e9af",
+      "00584a2112f7f68c312f63af6a2421a2",
+      "1eccd5e1046af403839ec542e265fe34",
+      "f69a9bc335e92e9bdb34d7ef83bc32b8",
+      "d8a80ad3e1ee404fda0bc2d5dbe60906",
+      "29452ed261e7c44aca7b639e14949053",
+      "866e12de7973f0c0ab1ef34b0a328ac2",
+      "5a4d98c0acb4e2aa65a5e12d8c03c8ba",
+      "6d3b8c617bd1b5a67230a8ed780bbbf1",
+      "bd6baf8ef4965c472b6e1d923b1d74ea"
+    ],
+    "example_quotes": [
+      "Should not have listed internal variables",
+      "do not expose internal variables",
+      "exposed internal variables",
+      "Agent should not have specified internal user id",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)",
+      "leaks raw refund_eligible field name/value (Part E scan)"
+    ],
+    "created_from": [
+      "a1789676082680548",
+      "a1789708060484551",
+      "a1789876588627651",
+      "a1789876761955746",
+      "a17899244764690",
+      "a17899244764691",
+      "a17899244764692",
+      "a17899244764693",
+      "a17899244764694",
+      "a17899244764695",
+      "a17899244764696",
+      "a17899244764697",
+      "a17899244764698",
+      "a17899244764699"
+    ],
+    "close_negative_trace_ids": [
+      "be45b376efb25a057de62431cf8ff8d2",
+      "63a3e9c396b27e47c98b1cd771604af4",
+      "7f360280d32fbbf723a5103adf8e49c6"
+    ],
+    "close_negative_notes": [
+      "support-0027: refund_eligible=False translated as \"Refund eligible: No\" -- plain language, no raw field name.",
+      "support-0031: same status-check shape, same correct translation.",
+      "support-0023: same shape, same correct translation."
+    ],
+    "requirement_source": "SPEC.md RESP-5 (\"Use direct and respectful language that explains the relevant decision\") -- raw field names are the opposite of direct customer-facing language.",
+    "evaluator_type": "Checkable from reply text alone against a known list of internal field/variable names (refund_eligible, store_id, user_id, product_id, etc.); citing a policy id is explicitly not a violation."
+  },
+  "continues_past_refusal": {
+    "definition": "After correctly declining an out-of-scope request, the agent continues on to offer further suggestions rather than stopping cleanly.",
+    "status": "candidate",
+    "count": 1,
+    "example_trace_ids": [
+      "0234525e72b78418765775fa7ccf55c5"
+    ],
+    "example_quotes": [
+      "This agent should have stopped after declining the request and not have continued to give suggestions"
+    ],
+    "created_from": [
+      "a178967449142539"
+    ],
+    "close_negative_trace_ids": [
+      "e51c7ba253aa7a001dc21352984d05d0"
+    ],
+    "close_negative_notes": [
+      "support-0166: same trace -- clean, single-line decline with no unsolicited continuation."
+    ],
+    "requirement_source": "SPEC.md SCOPE-2 (refusal cases) + the system prompt's refusal-rules section (\"Decline out-of-scope requests in one or two sentences\").",
+    "evaluator_type": "Checkable from reply text alone, but requires judgment on where \"cleanly stopping\" ends and \"continuing\" begins -- not a bright-line rule."
+  },
+  "inefficient_tool_use": {
+    "definition": "Agent makes many near-duplicate or speculative tool calls (e.g. guessing individual product names one at a time) instead of the one obviously-sufficient call available to it (e.g. a broad query with the right filters), even when the eventual answer is correct. The failure is the wasted calls/latency, independent of final-answer correctness.",
+    "status": "candidate",
+    "count": 5,
+    "example_trace_ids": [
+      "8218a58ce6e4986ae5c4585da7994270",
+      "28e56695ec9002599641df671a509e40",
+      "8cf5f83044ae87d42ddbd13d1d8f93ba",
+      "28ba14f1bf58907a7d3d69c9770e79df",
+      "2609195ae1bcca68b3b0b0e0f84438ad"
+    ],
+    "example_quotes": [
+      "Very inefficient tool use: 10 near-duplicate search_products calls guessing individual product names/prices before trying the obvious broad query",
+      "It denied the refund correctly but made unnecessary tool calls",
+      "Answered correctly but made unnecessary tool calls",
+      "3 search_products calls with varying phrasing/params before landing on a working query, plus 2 get_store_info calls for the same store",
+      "3 search_products calls with varying phrasing/params, plus 2 get_store_info calls trying different store identifier formats"
+    ],
+    "created_from": [
+      "a1789880695508",
+      "a1789703045951960",
+      "a1789876289581919",
+      "a17899248176050c",
+      "a17899248176051c"
+    ],
+    "close_negative_trace_ids": [
+      "d6995d54fac56535cb91c67063a11c02",
+      "6a071fc7e6975c62b2a717093db4be03"
+    ],
+    "close_negative_notes": [
+      "support-0152: 4 distinct tool calls (get_order, search_help_center, get_policy, escalate_to_human), each genuinely necessary for a dispute case, no redundancy.",
+      "support-0153: same shape, same justified multi-call pattern."
+    ],
+    "requirement_source": "No SPEC.md id -- a human-judgment quality concern (call efficiency), not a written requirement.",
+    "evaluator_type": "Needs the full tool-call sequence, not just the final reply -- counts/compares calls for redundancy against the obviously-sufficient alternative."
+  },
+  "no_clarifying_question": {
+    "definition": "Agent acts on an ambiguous/under-specified request -- either guessing a specific record or providing everything (e.g. the full order list) -- instead of asking the shopper a clarifying question first.",
+    "status": "candidate",
+    "count": 8,
+    "example_trace_ids": [
+      "0388019828e0e118597859232b184af8",
+      "121f35899a46d40dfd734968143d81f3",
+      "02feebc8efdec80bafacfec5f3f687d9",
+      "0e0a3fa8e22108006e8a4ce25768588c",
+      "155773c06c798100d4892e9eae4aafb8",
+      "2ea90fd940e580168e6593f4eac2785f",
+      "f11421c375b363357c55562fbca0b0e3",
+      "6d3b8c617bd1b5a67230a8ed780bbbf1"
+    ],
+    "example_quotes": [
+      "The agent assumed blue mug meant the Blue Heron Ceramics store and did not ask the shopper to clarify which product they were asking about",
+      "Agent did not ask what order the user was asking about, made unnecessary tool calls.",
+      "Agent met the requirement but adding extra verbosity was not required.",
+      "Agent met the requirement but should not have listed all orders without asking a clarifying question.",
+      "Agent should've asked clarifying question instead of assuming order number",
+      "Agent assumed order number without asking clarifying questions",
+      "Agent listed all the orders. If there were 100, agent would've listed all 100. There should be a threshold of number of orders to display when asked vaguely",
+      "Agent didnt clarify what they meant by \"override\""
+    ],
+    "created_from": [
+      "a1789674676713182",
+      "a1789674960904495",
+      "a1789675622965236",
+      "a1789675823744795",
+      "a1789704993445438",
+      "a1789705154301851",
+      "a1789707253733403",
+      "a1789708413725699"
+    ],
+    "close_negative_trace_ids": [
+      "1902707d1ed7f2ebfb7e3f58664146ed",
+      "5cc47f885eb10768078d614766401271",
+      "ddaf7b26934b982aa17b69cbd049f854",
+      "7fc63510127f74afc5836a14fcce697c",
+      "3b715c0e7ae3ac8a2b9a9d9350928e2a"
+    ],
+    "close_negative_notes": [
+      "support-0230: shopper unsure which order; agent lists 3 short options framed as an explicit \"which one do you mean?\" question, not a guess or a full silent dump.",
+      "support-0192: duplicate product title (dq-product-duplicate-title); agent asks for clarification before claiming a unique match, rather than guessing.",
+      "support-0193: same duplicate-title case, same correct clarifying behavior.",
+      "support-0194: same duplicate-title case, same correct clarifying behavior.",
+      "support-0195: same duplicate-title case, same correct clarifying behavior."
+    ],
+    "requirement_source": "No single SPEC.md id -- recurring human_judgment criteria across individual scenarios' expected.criterion fields (e.g. support-0230), not one fixed numbered requirement.",
+    "evaluator_type": "Needs ground truth about actual ambiguity (how many records genuinely match) plus the reply text -- can't be judged from the reply alone."
+  },
+  "asks_for_unusable_information": {
+    "definition": "Agent asks the customer for information that no available tool can accept or use (a product link/URL, a SKU, a screenshot, or a 'store location' concept not part of this platform), even as just one option alongside a usable one, instead of using the tools it actually has or asking only for something a tool could act on. Offering an unusable option is a violation on its own -- it doesn't need to be the only option offered.",
+    "status": "candidate",
+    "count": 7,
+    "example_trace_ids": [
+      "1fdf5107959d9f2ac04e2e12b5aaf27e",
+      "65bc378e86eeba3aabc4cda949daa6b8",
+      "f4a3679ee9d3a683266b6581efa4e1a4",
+      "e42d06914fa6a16c59de7e193bf95929",
+      "06ab0399d57c02efeecb26b477add8b4",
+      "5cc47f885eb10768078d614766401271",
+      "7fc63510127f74afc5836a14fcce697c"
+    ],
+    "example_quotes": [
+      "there's no tool that takes store location like this",
+      "this was irrelevant and presented as a non-actionable next step",
+      "should not ask for purchase date",
+      "asks whether to check a specific \"store/location,\" a concept not part of this platform",
+      "asks the customer to share a link to the product page after escalating",
+      "offers \"paste the product link/name\" -- product link is unusable even though name is a real option",
+      "offers \"share a link/screenshot\" alongside \"which option/store\" -- unusable option offered regardless"
+    ],
+    "created_from": [
+      "a1789707772863267",
+      "a1789708033877216",
+      "a178970916572850",
+      "a17899247660310b",
+      "a17899247660311b",
+      "a17899247660312b",
+      "a17899247660313b"
+    ],
+    "close_negative_trace_ids": [
+      "2ea90fd940e580168e6593f4eac2785f"
+    ],
+    "close_negative_notes": [
+      "support-0245: find_order returns no matches, so the agent asks for the order number or store name -- both real, usable tool parameters -- instead of a link/SKU/screenshot."
+    ],
+    "requirement_source": "SPEC.md section 4 (Tools) -- the input signatures of TOOL-1 through TOOL-9 define what a tool can actually accept; this mode is a direct implementation-contract check, not a narrative requirement.",
+    "evaluator_type": "Objectively checkable given the tool signatures: does any available tool accept the thing being asked for. No fuzzy judgment once the tool contracts are known."
+  },
+  "fails_to_refuse_out_of_scope": {
+    "definition": "Agent engages with or attempts to help an out-of-scope request (unrelated to Cartwheel -- e.g. a recipe, a third-party marketplace order) instead of declining it. Distinct from continues_past_refusal, which assumes the agent did refuse first and only over-continues afterward.",
+    "status": "candidate",
+    "count": 3,
+    "example_trace_ids": [
+      "e35b2bf8c1c1f2bcc35010c02e5cca64",
+      "5dd1a4c5afefa77c9ebeab5a48d87087",
+      "e2049124ffb9d6f5585332bf4780e4d0"
+    ],
+    "example_quotes": [
+      "Agent provided recipe for banana bread instead of declining the out of scope request",
+      "Agent did not capture the user request about Amazon order and assumed it was for Cartwheel. Agent should've declined out of scope request.",
+      "Agent shoudln't have offered to do anything that has nothing to do with Cartwheel"
+    ],
+    "created_from": [
+      "a1789847987332385",
+      "a1789848049833620",
+      "a1789848083610371"
+    ],
+    "close_negative_trace_ids": [
+      "e51c7ba253aa7a001dc21352984d05d0"
+    ],
+    "close_negative_notes": [
+      "support-0166: \"help me file my taxes\" -- declines cleanly in one line, does not continue past it."
+    ],
+    "requirement_source": "SPEC.md SCOPE-2 (\"The agent refuses: legal advice, payment-credential handling, anything outside Cartwheel\").",
+    "evaluator_type": "Checkable from reply text alone: did the agent decline, or did it attempt to help with the out-of-scope request."
+  },
+  "escalation_handling_failure": {
+    "definition": "Agent's escalation handling doesn't match what the situation requires: either offers an escalation channel that doesn't fit the actual denial (e.g. suggesting a dispute for a policy-window override, or offering to 'check access' for a permanent authorization boundary), or never escalates a case the spec requires escalating (e.g. a dispute under ESC-3), giving only in-house guidance instead with no channel offered at all.",
+    "status": "candidate",
+    "count": 5,
+    "example_trace_ids": [
+      "07025a9da0e849a436a3807a9f816468",
+      "1b1b1bb6d10f742ccb141d5f3029650d",
+      "a0ed57bcab7c592b7a47bc5ba51550e7",
+      "a9d9963d61294c62a9b163b9164305ec",
+      "live-ab3e3f81516b4f37a770302c1d804a58"
+    ],
+    "example_quotes": [
+      "Agent should not have offered to open a dispute",
+      "Offered to help with the order the user was not supposed to have access to",
+      "Agent did not escalate to human",
+      "Agent should've escalated to human",
+      "Agent should've escalated to human"
+    ],
+    "created_from": [
+      "a1789675345517373",
+      "a1789876448771579",
+      "a1789848350967337",
+      "a1789850462771687",
+      "a1789850481264681"
+    ],
+    "close_negative_trace_ids": [
+      "d6995d54fac56535cb91c67063a11c02",
+      "6a071fc7e6975c62b2a717093db4be03",
+      "live-e02b7d8aa83842db89e44b7164bf4479"
+    ],
+    "close_negative_notes": [
+      "support-0152: dispute (ESC-3) on order 3677; agent calls escalate_to_human directly, no wrong-channel offer, no stalling.",
+      "support-0153: same dispute shape (order 1023), same correct direct escalation.",
+      "support-0159 live-chat continuation: asks for confirmation first, then correctly calls escalate_to_human once confirmed -- completes the accepted \"ask first\" pattern."
+    ],
+    "requirement_source": "SPEC.md ESC-1 through ESC-4 (which case requires escalation) + RESP-4 (explaining escalations correctly).",
+    "evaluator_type": "Needs the tool-call trace (was escalate_to_human called) plus ground truth on which ESC-* rule applies to this case -- not judgable from reply text alone."
+  }
+}
