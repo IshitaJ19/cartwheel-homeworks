@@ -16,6 +16,7 @@ data/cartwheel.db
 .live_chat_sessions.db-wal
 scenarios/results/
 replay/results/
+.harbor/
 
 # Python
 __pycache__/
