@@ -463,6 +463,65 @@ example, map fairly directly onto failure modes a review of a tool-using
 agent would likely also surface independently — which is itself a useful
 sanity check that your own taxonomy isn't missing something structural.
 
+## Iterating a judge prompt against dev disagreements can overfit, like a model can
+
+Reading every dev-set disagreement and patching the prompt to fix each one
+feels like careful, grounded iteration — and it is grounded, but it's still
+fitting to a sample, not to the underlying rule. A fix built from "here's
+exactly what went wrong in these 15 traces" tends to encode some of *those
+traces'* specific shape (a particular phrasing, a particular tool-call
+pattern) alongside the general principle it's meant to teach. The dev score
+goes up because the prompt now handles the dev set's specific quirks; that
+gain doesn't necessarily transfer to different quirks the test set happens
+to contain. This is the same overfitting concept from model training,
+just applied to prompt wording instead of weights — and it's easy to miss
+specifically because each individual revision felt well-justified by real
+evidence at the time.
+
+## A held-out test set only teaches you something if you don't peek early
+
+The overfitting above is only *detectable* because dev and test stayed
+genuinely separate until iteration was declared finished. If test scores
+had been checked during iteration too, revisions would have started
+chasing test's specific noise as well, and nothing would have been left to
+reveal the gap. The discipline (look at test exactly once, after freezing,
+no exceptions for "just a quick check") isn't bureaucratic caution — it's
+the only thing that makes the eventual test number mean anything.
+
+## Confidence intervals change what a metric comparison is allowed to claim
+
+A point estimate alone invites over-reading small differences: "0.85 beats
+0.77" sounds decisive until the sample size behind both numbers is small
+enough that their intervals overlap substantially. With something like 15
+examples in the class that matters, a 10-20 point swing in TPR/TNR between
+two versions of anything (a prompt, a model, a pipeline change) is easily
+within noise. The discipline is to hold the interval next to the point
+estimate before concluding one version is actually better — and to say so
+plainly when a comparison can't support the stronger claim.
+
+## A retry can silently repeat the same bad output if a cache sits underneath it
+
+When a request is cached by its exact inputs (e.g. a (prompt, content)
+pair), a plain retry after a malformed or invalid model response hits the
+identical cache key and gets back the identical bad response — it isn't
+actually asking the model again. This looks like intermittent flakiness
+("it failed, let me just retry") when it's really deterministic and
+unrecoverable without forcing a fresh call. The fix is scoped: bypass the
+cache only for the specific items that came back invalid, not for the
+whole batch (which would re-pay for everything that already succeeded).
+
+## A stated minimum sample size unblocks the pipeline, not necessarily the conclusion
+
+"At least 30 of each class" is enough to make a train/dev/test split
+mechanically valid — every stage has something to work with, the numbers
+satisfy the guard. It says nothing about whether that's enough data to
+actually learn or verify the general pattern rather than a narrow slice of
+it. A judge can clear every stated minimum in the pipeline and still land
+at a ceiling (here, a TNR that didn't move regardless of prompt version)
+that's set by how much and how varied the underlying data is — a different
+problem than the prompt wording, and one no amount of further prompt
+iteration fixes.
+
 ## References
 
 - [Hamel Husain: Why is error analysis so important in LLM evals, and how is it performed?](https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html) — relevant to the open-coding/failure-taxonomy work in Homework 4.

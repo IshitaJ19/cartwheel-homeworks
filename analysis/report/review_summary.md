@@ -87,6 +87,33 @@ interface's own accept/reject UI discards a rejected suggestion with no
 record, so these were persisted directly to satisfy the "at least one
 rejected suggestion" requirement honestly rather than losing the reasoning.
 
+## Planned agent improvements (not yet implemented)
+
+Two changes identified during HW4/HW5 review, deliberately deferred rather
+than implemented now (mid-way through HW5 label collection against the
+current agent behavior -- changing it now would shift what's being labeled).
+
+1. **Add a store lookup by numeric `store_id`.** `get_store_info` and
+   `search_products`'s `store` filter both resolve only by name/slug
+   (`db.get_store_by_name`) -- there is no tool that accepts a bare
+   `store_id`. Observed twice: the `support-0151` live-chat investigation
+   and a `hw5-ncq` trace both show the agent guessing `get_store_info(store="1")`,
+   getting `not_found`, then retrying with the store name it already had
+   from a different tool result. Either add a new tool (e.g.
+   `get_store_by_id`) or extend `get_store_info`'s `store` parameter to
+   accept a numeric id as well as a name/slug -- the smaller, more contained
+   change.
+2. **Add a system-prompt instruction to confirm before acting on any
+   request**, not just escalations. Motivated by the `no_clarifying_question`
+   /`escalation_handling_failure` findings throughout this review: the
+   agent's willingness to ask-first varies by case (e.g. `support-0160`'s
+   family reliably asks before escalating; several `no_clarifying_question`
+   positives act on an assumption instead). A general confirm-before-acting
+   rule would unify this rather than relying on per-case judgment.
+
+Both require an update to `SPEC.md`/the system prompt when implemented,
+with these findings as the motivating annotations.
+
 ## Other notes
 
 - No `SPEC.md` revisions were made during this homework — all findings were

@@ -15,9 +15,13 @@ any homework submission — safe to edit, reorganize, or delete freely.
   a tool choice), recording an explicit accept/revise/reject outcome per
   automated suggestion as an audit-trail mechanism, finalizing a taxonomy
   (why every mode needs both positive and close-negative examples), the
-  published AgentDebug/AgentErrorTaxonomy reference taxonomy, and practical
-  gotchas (stale pinned Docker images; regenerating an input file mid-run
-  without retracting earlier output).
+  published AgentDebug/AgentErrorTaxonomy reference taxonomy, why iterating
+  a judge prompt against dev disagreements can overfit like a model can,
+  why held-out test discipline only works if you don't peek early,
+  confidence intervals in metric comparisons, cache-masked retries, and
+  practical gotchas (stale pinned Docker images; regenerating an input file
+  mid-run without retracting earlier output; a stated minimum sample size
+  unblocking the pipeline but not the conclusion).
 - [hw1-notes.md](hw1-notes.md) — HW1 case studies: two real prompt-gap
   findings (with before/after evidence) and the find_order contract-drift
   example.
@@ -32,3 +36,8 @@ any homework submission — safe to edit, reorganize, or delete freely.
   failure with no available tool-based fix, "didn't guess" vs. "handled it
   well," a leaked generator placeholder that invalidated five scenarios, and
   an escalation channel offered for the wrong reason.
+- [hw5-notes.md](hw5-notes.md) — HW5 case studies from building an LLM
+  judge: a judge that anchored on a good opening turn and ignored what came
+  after, an exclusion clause that stated a rule without enforcing it, how
+  fixing one boundary problem exposed a new one, and a list addition that
+  didn't change behavior without a worked example.
