@@ -18,10 +18,12 @@ any homework submission — safe to edit, reorganize, or delete freely.
   published AgentDebug/AgentErrorTaxonomy reference taxonomy, why iterating
   a judge prompt against dev disagreements can overfit like a model can,
   why held-out test discipline only works if you don't peek early,
-  confidence intervals in metric comparisons, cache-masked retries, and
-  practical gotchas (stale pinned Docker images; regenerating an input file
-  mid-run without retracting earlier output; a stated minimum sample size
-  unblocking the pipeline but not the conclusion).
+  confidence intervals in metric comparisons, cache-masked retries, a
+  stated minimum sample size unblocking the pipeline but not the
+  conclusion, why to resist fixing prompt/tool bugs mid-review, CI for
+  evals (keeping a small high-quality eval set in CI), and practical
+  gotchas (stale pinned Docker images; regenerating an input file mid-run
+  without retracting earlier output).
 - [hw1-notes.md](hw1-notes.md) — HW1 case studies: two real prompt-gap
   findings (with before/after evidence) and the find_order contract-drift
   example.
@@ -41,3 +43,6 @@ any homework submission — safe to edit, reorganize, or delete freely.
   after, an exclusion clause that stated a rule without enforcing it, how
   fixing one boundary problem exposed a new one, and a list addition that
   didn't change behavior without a worked example.
+- [hw6-notes.md](hw6-notes.md) — HW6 terminology (case/eval case vs.
+  run/trial vs. baseline runs, and why classification needs multiple
+  trials rather than one) plus case studies from wiring Harbor CI.

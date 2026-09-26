@@ -332,6 +332,35 @@ real pattern, or left out entirely for lacking ground truth to judge it
 against) — four suggestions, four independent, individually-justified
 outcomes, rather than one blanket "reviewed Workshop's findings" statement.
 
+## Resist fixing bugs mid-review; note them and wait for evals
+
+During open and axial coding it's tempting to patch an obvious prompt or
+tool bug the moment you spot it. Fixing it isn't wrong in principle — the
+challenge is keeping the review process trustworthy while you do. If you
+change the system mid-review, later traces are being produced by a
+different version than earlier ones, so the batch you're reviewing stops
+being one coherent population — you lose track of which failures belong
+to which version, and you can end up deleting a not-yet-characterized
+example before you've actually understood it.
+
+For the homeworks specifically: avoid changing the prompt/tools while
+still doing open and axial coding. The goal at this stage is to
+understand the *current* system and collect enough failures to name
+recurring modes — not to already be improving it. Optimization is a later
+stage: once failure modes and LLM-judges exist, you can make a change and
+actually *measure* whether it helped (this is also where more systematic
+methods like GEPA come in), rather than eyeballing whether a fix "seems"
+to work on the handful of traces that prompted it.
+
+That separation is what prevents over-optimizing to a few individual
+traces. Practical rule: if you spot an obvious fix during open coding,
+write it down (and note which already-reviewed failures you believe it
+would resolve) — but hold off on applying it until evals are in place to
+measure the effect. Same underlying discipline as "a held-out test set
+only teaches you something if you don't peek early" above: the value of
+a review pass — like the value of a held-out test set — depends on not
+disturbing the thing being measured while you're still measuring it.
+
 ## Finalizing a taxonomy: why every mode needs positive *and* close-negative examples
 
 Once open coding (and any second-pass tool-assisted review) has produced a
@@ -521,6 +550,39 @@ at a ceiling (here, a TNR that didn't move regardless of prompt version)
 that's set by how much and how varied the underlying data is — a different
 problem than the prompt wording, and one no amount of further prompt
 iteration fixes.
+
+## CI for evals
+
+How eval work turns into an actual guardrail on every change, rather than
+staying a one-off review exercise.
+
+### A case is a non-deterministic test function, not a single assertion
+
+A single eval "case" (one line in a cases file, one scripted scenario) is
+conceptually one pytest function — but the thing under test is a
+non-deterministic LLM, not deterministic code. A normal unit test asserts
+once and gets a stable true/false forever; an AI eval case has to run
+**N times** (e.g. `N=5`) and report a *pass rate*, because the same
+prompt/task against the same model can genuinely produce a different
+outcome from one run to the next. That's the reason `pass@k`/`pass^k`
+exist as first-class metrics here rather than a single boolean: the
+"result" of a case is inherently a distribution, and any framework that
+collapses it to one true/false (from a single run) is silently choosing
+one arbitrary sample of that distribution and reporting it as ground
+truth. See [hw6-notes.md](hw6-notes.md) for the concrete case/run/trial/
+baseline terminology this maps onto in one implementation.
+
+### Keep a small, high-quality eval set running in CI
+
+A practical target: ~30 carefully chosen evals (not hundreds) wired into
+CI, rather than skipping automated checks until a large suite exists. A
+small set that's actually high-quality — each case grounded in a real
+requirement or a real observed failure, not padding — is more valuable
+than a large set diluted with redundant or low-signal cases, and it's
+cheap enough to run on every change without becoming a bottleneck. Grow it
+deliberately (e.g. adding a case for each newly confirmed failure mode)
+rather than trying to front-load comprehensive coverage before shipping
+any CI gate at all.
 
 ## References
 
