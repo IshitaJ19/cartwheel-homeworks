@@ -1,0 +1,32 @@
+{
+  "case_id": "e-007",
+  "runs": [
+    {
+      "label": "before",
+      "commit": "96594ca",
+      "change": "Removed the 'account change of any kind (email, name, or address) -> escalate_to_human' clause from the system prompt's Escalation section in agent/agent.py.",
+      "result": {
+        "passed": 0,
+        "trials": 5,
+        "pass_at_1": 0.0,
+        "pass_at_5": 0.0,
+        "pass_hat_5": 0.0,
+        "ci_decision": "block"
+      }
+    },
+    {
+      "label": "after",
+      "commit": "684ef66",
+      "change": "Reverted 96594ca; the escalation clause is restored verbatim.",
+      "result": {
+        "passed": 3,
+        "trials": 5,
+        "pass_at_1": 0.6,
+        "pass_at_5": 1.0,
+        "pass_hat_5": 0.0,
+        "ci_decision": "block"
+      }
+    }
+  ],
+  "explanation": "Removing the account-change escalation instruction made the agent stop calling escalate_to_human for e-007's email-change request, failing all 5 trials (block). Reverting it restored the instruction and 3 of 5 trials passed. The second run still blocks under pass^5 (regression cases require all 5 trials to pass), but the pass rate recovering from 0/5 to 3/5 confirms the original behavior returned -- the remaining 2 failures reflect the agent's normal baseline non-determinism on this case, not the reverted regression, and are kept as evidence rather than rerun."
+}
