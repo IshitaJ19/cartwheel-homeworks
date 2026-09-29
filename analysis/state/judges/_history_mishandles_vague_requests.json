@@ -27,6 +27,42 @@
     {
       "judge_id": "mishandles_vague_requests-v6",
       "prompt_hash": "feb82abd627c"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v7",
+      "prompt_hash": "4d39c3dcbee2"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v8",
+      "prompt_hash": "10a9e06bdb63"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v9",
+      "prompt_hash": "eba077ca369a"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v10",
+      "prompt_hash": "c8ed0cfc5886"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v11",
+      "prompt_hash": "c8ed0cfc5886"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v12",
+      "prompt_hash": "dbbd9e6725bc"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v13",
+      "prompt_hash": "dbbd9e6725bc"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v14",
+      "prompt_hash": "dbbd9e6725bc"
+    },
+    {
+      "judge_id": "mishandles_vague_requests-v15",
+      "prompt_hash": "08c6ed513c1a"
     }
   ]
 }
