@@ -146,6 +146,95 @@ or wrongly let a regression case merge because it happened to succeed
 once. That's why regression cases are gated on pass^k (all-must-succeed)
 and capability cases are only ever reported via pass@k (can-succeed).
 
+## Three questions from one run count (our own e-008, n=5, c=2)
+
+`e-008`'s actual result against the revised `mishandles_vague_requests-v7`
+judge (2 of 5 runs passed) gives three very different-looking numbers
+depending on which question is asked — worth walking through as a single
+concrete example, since all three come from the exact same 5 runs:
+
+1. **pass@5 = 1.0 — "Can the agent reach the finish line given multiple
+   attempts?"** Question: is the agent *capable* of this at all? Use
+   case: capability testing, or a human-in-the-loop workflow (e.g.
+   generate 5 candidate replies, a reviewer picks the one that's right —
+   here, at least one of the 5 always was).
+2. **pass@1 = 0.4 — "How often does it work on the first try?"** Question:
+   what are the odds of a correct answer in one shot, no retries? Use
+   case: standard single-shot production execution, where latency/cost
+   rules out sampling k attempts and picking the best.
+3. **pass^5 = 0.0 — "Is this a stable regression test?"** Question: is
+   the agent 100% reliable and deterministic on this task? Use case: CI
+   gating. A case that passes 2 of 5 runs is flaking 60% of the time —
+   in a pipeline that must guard against breaking changes, that reads as
+   a hard failure (0.0), not a partial credit of 0.4.
+
+**Key takeaway.** A single number like "80% accuracy" hides which of
+these three questions it's actually answering, and for an agent that
+samples, the answer genuinely differs by question, not just by
+measurement noise. `e-008` has high peak capability (pass@5 = 1.0) and
+zero consistency (pass^5 = 0.0) from the *same* 5 runs — whether that
+reads as a success or a failure depends entirely on whether you're
+asking about maximum potential (capability) or deployment stability
+(regression gating). This is exactly why HW6 defines both metrics
+instead of picking one: neither alone is a complete answer.
+
+## pass^k at k=n collapses to a binary rule — and why that's not the general case
+
+When k equals n (asking about *all* the observed runs, as CI does with
+pass^5 on a 5-run batch), the general combinatorial formula simplifies to
+something worth stating on its own:
+
+```
+pass^n = C(c, n) / C(n, n) = 1.0 if c == n, else 0.0
+```
+
+`C(n, n) = 1` (there's exactly one size-n subset of n runs: all of them),
+and `C(c, n) = 1` only if `c == n` (you can only fill an n-sized subset
+with successes if every run succeeded), otherwise `C(c, n) = 0`. So at
+k=n specifically, pass^k really is the simple pass/fail rule "did every
+run succeed" — for `e-008` (n=5, c=2), `c != 5`, so `pass^5 = C(2,5)/C(5,5)
+= 0/1 = 0.0`, which is just "you failed 3 of the 5 runs, so not all 5
+passed."
+
+**This is a special case, not the definition.** For k < n it's genuinely
+continuous, not binary — `e-002` (n=5, c=3) already shows this in this
+file's own worked example: `pass^3 = C(3,3)/C(5,3) = 1/10 = 0.100`, not a
+flat 0 or 1. The binary shortcut only applies when you're asking about
+every single observed run at once (k=n), which happens to be exactly
+what HW6's CI gate does (`--n-attempts 5` and `pass^5`), so it's easy to
+mistake the special case for the general rule.
+
+## pass^k (empirical) vs. pᵏ (theoretical) — two different numbers that look similar
+
+It's tempting to read `pass^5 = 0.0` for `e-008` (2/5 passed, pass@1 =
+0.4) as "the probability of 5 successes in a row is basically zero," and
+reach for `0.4^5 ≈ 0.01024` as if it were the same claim in a different
+form. It isn't — these are two different quantities answering two
+different questions:
+
+- **`pass^5 = 0.0` (empirical, from the estimator).** This is a fact
+  about the 5 runs you actually observed, computed from the exact
+  sequence of pass/fail outcomes without assuming anything about the
+  underlying process: of the 5 runs that happened, not all 5 passed, so
+  the observed batch fails the "all-5" bar exactly. No probability
+  model, no extrapolation — it's a description of this specific sample
+  (equivalent to sampling k of the n runs *without* replacement, per the
+  hypergeometric-style formula above).
+- **`0.4^5 ≈ 0.01024` (theoretical, from a model).** This instead
+  *assumes* the agent has some fixed, true per-attempt success
+  probability p (here plugging in the observed pass@1 = 0.4 as an
+  estimate of p), then asks: if the agent ran 5 **independent future**
+  attempts at that same fixed rate, what's the chance all 5 land? That's
+  a Bernoulli/binomial model claim about *future, hypothetical* runs,
+  built on the assumption that trials are i.i.d. at rate p — an
+  assumption the 5-run empirical estimator never has to make.
+
+Notationally, this is exactly why the course uses a superscript (`pass^k`)
+to contrast with the `@` in `pass@k`: `@` marks "at least one of k,"
+`^` marks "all k" — the consistency floor versus the capability ceiling,
+both computed the same empirical way from the same n observed runs,
+neither one reaching for an assumed probability model.
+
 ### Summary checklist
 
 | Metric | What it measures | Why use it? |
