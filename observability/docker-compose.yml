@@ -136,9 +136,7 @@ services:
       retries: 10
 
   minio:
-    # docker.io/minio/minio stopped receiving updates and now denies pulls;
-    # the Red Hat-hosted Quay mirror still serves the image.
-    image: quay.io/minio/minio:latest
+    image: cgr.dev/chainguard/minio:latest
     restart: always
     entrypoint: sh
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
