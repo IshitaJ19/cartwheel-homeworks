@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 from typing import Any, Callable
 
 
@@ -43,8 +44,34 @@ def select_traces(
     Raises:
         ValueError: if random_rate is outside (0, 1] or a trace has no "id".
     """
-    ### YOUR CODE HERE (hw7)
-    raise NotImplementedError("hw7: implement select_traces")
+    if not 0 < random_rate <= 1:
+        raise ValueError("random_rate must be in (0, 1]")
+    for trace in traces:
+        if not trace.get("id"):
+            raise ValueError("every trace needs a nonempty 'id'")
+
+    count = min(len(traces), max(1, round(random_rate * len(traces))))
+    rng = random.Random(seed)
+    random_sample = rng.sample(traces, count)
+
+    risk_selected = {
+        name: [trace for trace in traces if predicate(trace)]
+        for name, predicate in risk_groups.items()
+    }
+
+    to_judge: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for trace in random_sample:
+        if trace["id"] not in seen_ids:
+            seen_ids.add(trace["id"])
+            to_judge.append(trace)
+    for name in risk_groups:
+        for trace in risk_selected[name]:
+            if trace["id"] not in seen_ids:
+                seen_ids.add(trace["id"])
+                to_judge.append(trace)
+
+    return {"random": random_sample, "risk_groups": risk_selected, "to_judge": to_judge}
 
 
 # Each function identifies one risk group in the Cartwheel traces.

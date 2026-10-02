@@ -70,8 +70,39 @@ def build_score_records(
         A list of score record dicts with keys: score_id, name, value,
         data_type, trace_id, comment (comment is None for verdicts).
     """
-    ### YOUR CODE HERE (hw7)
-    raise NotImplementedError("hw7: implement build_score_records")
+    records: list[dict[str, Any]] = []
+    for trace_id, verdict in random_verdicts.items():
+        records.append({
+            "score_id": _stable_id(mode, "verdict", trace_id),
+            "name": f"{mode}_verdict",
+            "value": float(verdict),
+            "data_type": "NUMERIC",
+            "trace_id": trace_id,
+            "comment": None,
+        })
+    for trace_id, verdict in risk_verdicts.items():
+        records.append({
+            "score_id": _stable_id(mode, "risk_verdict", trace_id),
+            "name": f"{mode}_risk_verdict",
+            "value": float(verdict),
+            "data_type": "NUMERIC",
+            "trace_id": trace_id,
+            "comment": None,
+        })
+    comment = (
+        f"95% CI {estimate['ci_low']}-{estimate['ci_high']}, "
+        f"raw {estimate['raw']}, n={estimate['n_sample']}"
+    )
+    records.append({
+        "score_id": _stable_id(mode, "prevalence", batch_label),
+        "name": f"{mode}_corrected_prevalence",
+        "value": estimate["corrected"],
+        "data_type": "NUMERIC",
+        "trace_id": None,
+        "comment": comment,
+        "session_id": batch_label,
+    })
+    return records
 
 
 # ---------------------------------------------------------------------------
@@ -105,8 +136,16 @@ def post_scores(records: list[dict[str, Any]]) -> int:
         }
         if record.get("trace_id") is not None:
             kwargs["trace_id"] = record["trace_id"]
+        elif record.get("session_id"):
+            # A batch-level score (e.g. corrected prevalence) has no trace to
+            # attach to. The Langfuse API rejects create_score with neither
+            # trace_id nor session_id set ("Bad request"), so fall back to
+            # session_id, keyed by the batch label, as the attachment point.
+            kwargs["session_id"] = record["session_id"]
         if record.get("comment"):
             kwargs["comment"] = record["comment"]
+        if record.get("metadata"):
+            kwargs["metadata"] = record["metadata"]
         client.create_score(**kwargs)
     client.flush()
     return len(records)

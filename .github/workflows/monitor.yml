@@ -1,0 +1,48 @@
+name: monitor
+
+# Daily post-deployment monitor for one failure mode (HW7). Reads the
+# previous 24 hours of traces, samples, judges, corrects, and writes scores
+# back to Langfuse -- no Cartwheel model calls, only the frozen judge model.
+#
+# Runs on a self-hosted runner, not ubuntu-latest: LANGFUSE_HOST here is
+# http://localhost:3000 (the self-hosted docker-compose stack from
+# observability/docker-compose.yml), which only this machine can reach.
+# A GitHub-hosted runner would simply fail to connect. See
+# monitoring/README.md for self-hosted runner setup.
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC daily
+  workflow_dispatch: {}
+
+jobs:
+  monitor:
+    name: run the frozen judge over the last 24 hours
+    runs-on: self-hosted
+    env:
+      LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      # mishandles_vague_requests-v0 is pinned to gpt-4o-mini.
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - run: uv sync
+
+      - name: Run the monitor over the last 24 hours
+        run: |
+          uv run python -m monitoring.run --last-hours 24 --confirm \
+            | tee monitoring/last_run.log
+
+      - name: Upload the monitoring output as a workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-output-${{ github.run_id }}
+          path: |
+            monitoring/history.jsonl
+            monitoring/last_run.log
+          if-no-files-found: warn

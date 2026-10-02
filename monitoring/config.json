@@ -1,0 +1,20 @@
+{
+  "judge_id": "mishandles_vague_requests-v0",
+  "judge_mode": "mishandles_vague_requests",
+  "model": "gpt-5.4-nano",
+  "random_rate": 0.2,
+  "risk_groups": ["multi_turn", "write_action"],
+  "threshold": 0.15,
+  "periods": [
+    {
+      "label": "before",
+      "from": "2026-09-14T15:45:59.104Z",
+      "to": "2026-09-14T16:00:36.941Z"
+    },
+    {
+      "label": "after",
+      "from": "2026-10-01T01:32:20.682Z",
+      "to": "2026-10-01T01:43:59.511Z"
+    }
+  ]
+}
