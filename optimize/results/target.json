@@ -1,0 +1,12 @@
+{
+  "failure_mode": "mishandles_vague_requests",
+  "source": "Homework 5 failure report",
+  "prevalence": 0.1193,
+  "requirement": "RESP-3",
+  "example_trace_ids": [
+    "0388019828e0e118597859232b184af8",
+    "02654e693da104e32943d4c20f249351",
+    "live-46db4e4a541e484f9a2f8559a1f45464"
+  ],
+  "why_agent_can_change_it": "All three traces show the agent choosing to act/assume instead of asking one clarifying question when the request was under-specified: trace 1 assumed which store/product the shopper meant instead of confirming it, trace 2 assumed an order id instead of asking the customer to confirm it, and trace 3 ran ~30 speculative searches after zero matches and then asserted an unsupported 'we can often find the right style keywords' instead of stating nothing matched or asking for more detail. This is a decision-procedure failure (when to ask vs. when to act/search), not a missing capability or data gap, so it is addressable directly: a prompt rule requiring a tool-actionable clarifying question before any write action or further speculative search on ambiguous input, a harness check that blocks a write tool call until an identifying parameter has been confirmed, or a tightened tool description that stops the agent from asking for unusable identifiers (e.g. a product link)."
+}
