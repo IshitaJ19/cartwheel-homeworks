@@ -46,3 +46,11 @@ any homework submission — safe to edit, reorganize, or delete freely.
 - [hw6-notes.md](hw6-notes.md) — HW6 terminology (case/eval case vs.
   run/trial vs. baseline runs, and why classification needs multiple
   trials rather than one) plus case studies from wiring Harbor CI.
+- [hw7-notes.md](hw7-notes.md) — HW7 case studies from post-deployment
+  monitoring: why TPR/TNR are a one-time frozen property of a judge rather
+  than recomputed per period, Rogan-Gladen prevalence correction, random
+  sampling vs. risk-group auditing, and how monitoring differs from CI.
+- [hw8-notes.md](hw8-notes.md) — HW8 case studies from comparing agent
+  configurations: why the fixed development/test split and 150-run search
+  budget reuse HW6's 10 eval cases rather than new ones, and why the split
+  is locked before any agent change.
