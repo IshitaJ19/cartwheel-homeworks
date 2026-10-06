@@ -327,6 +327,25 @@ def escalate_to_human_logic(
 # ---------------------------------------------------------------------------
 
 
+def _flag_ambiguous_matches(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
+    """Harness-level result check (HW8 Part C): find_order exists precisely
+    to resolve an ambiguous product reference, so more than one match means
+    the ambiguity was not resolved. Surface that in the result itself,
+    rather than relying on the model to notice and recall general guidance,
+    so the next model turn cannot act on one match without being told the
+    lookup came back ambiguous."""
+    if fn is hw_tools.find_order and isinstance(result, dict) and result.get("ok"):
+        orders = result.get("orders") or []
+        if len(orders) > 1:
+            result = dict(result)
+            result["ambiguity_note"] = (
+                "More than one order matched this search. Do not pick one or act "
+                "on any of them yet -- list the matches for the customer and ask "
+                "which order they mean before taking any further action."
+            )
+    return result
+
+
 def _call(
     wrapper: RunContextWrapper[AuthContext], fn: Any, /, *args: Any
 ) -> dict[str, Any]:
@@ -334,6 +353,7 @@ def _call(
         result = fn(wrapper.context, *args)
     except NotImplementedError as exc:
         result = {"ok": False, "error": "not_implemented", "reason": str(exc)}
+    result = _flag_ambiguous_matches(fn, result)
     record_tool_result(wrapper.context, result)
     return result
 
