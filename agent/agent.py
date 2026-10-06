@@ -365,11 +365,7 @@ def _issue_refund_impl(
 def issue_refund(
     wrapper: RunContextWrapper[AuthContext], order_id: int, amount_usd: float, reason: str
 ) -> dict[str, Any]:
-    """Issue a refund on an order. Call this only after the customer has
-    confirmed which specific order this refund is for (by order number or
-    another unambiguous identifier); if more than one of the customer's
-    orders could match their request, ask them to choose before calling
-    this tool. Large refunds are queued for human approval."""
+    """Issue a refund on an order. Large refunds are queued for human approval."""
     return _issue_refund_impl(wrapper, order_id, amount_usd, reason)
 
 
@@ -417,11 +413,7 @@ def list_my_orders(wrapper: RunContextWrapper[AuthContext]) -> dict[str, Any]:
 def cancel_order(
     wrapper: RunContextWrapper[AuthContext], order_id: int, reason: str
 ) -> dict[str, Any]:
-    """Cancel an order that has not shipped yet. Call this only after the
-    customer has confirmed which specific order to cancel (by order number
-    or another unambiguous identifier); if more than one of the customer's
-    orders could match their request, ask them to choose before calling
-    this tool."""
+    """Cancel an order that has not shipped yet."""
     return _call(wrapper, hw_tools.cancel_order, order_id, reason)
 
 
