@@ -395,6 +395,47 @@ def judge_trace_text(transcript: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _parse_judge_verdict(text: str) -> str:
+    """Parse a judge's raw response text into "pass" or "fail".
+
+    Judge prompts in this repo use two different output schemas: an
+    ``{"answer": "pass"|"fail"}`` schema (e.g. unsupported_policy_claim) and
+    a ``{"result": "Pass"|"Fail"}`` schema (e.g. mishandles_vague_requests,
+    matching monitoring/run_judges.py's own ``row.get("result", "")``
+    parsing). Try a real JSON parse first, since it is unambiguous; only
+    fall back to text search when the judge did not return valid JSON, and
+    even then require a word-boundary match so "no failures" or "fails to"
+    inside an otherwise Pass critique is never mistaken for a Fail verdict.
+    """
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```\w*\n?", "", cleaned)
+        cleaned = re.sub(r"```$", "", cleaned.strip())
+    try:
+        data = json.loads(cleaned)
+    except (json.JSONDecodeError, TypeError):
+        data = None
+    if isinstance(data, dict):
+        for key in ("result", "answer"):
+            if key in data:
+                value = str(data[key]).strip().lower()
+                if value in ("pass", "fail"):
+                    return value
+
+    match = re.search(r'"(?:answer|result)"\s*:\s*"(pass|fail)"', text, re.IGNORECASE)
+    if match:
+        return match.group(1).lower()
+
+    lowered = text.lower()
+    has_fail = re.search(r"\bfail\b", lowered) is not None
+    has_pass = re.search(r"\bpass\b", lowered) is not None
+    if has_fail and not has_pass:
+        return "fail"
+    if has_pass and not has_fail:
+        return "pass"
+    return "fail" if has_fail else "pass"
+
+
 def judge_reply(judge: dict[str, Any], reply: str, docs: str) -> str:
     """Run one frozen judge on a reply. Returns "pass" or "fail"."""
     return judge_reply_with_text(judge, reply, docs)[0]
@@ -426,8 +467,4 @@ def judge_reply_with_text(judge: dict[str, Any], reply: str, docs: str) -> tuple
         timeout=120,
     )
     text = response.choices[0].message.content or ""
-    match = re.search(r'"answer"\s*:\s*"(pass|fail)"', text)
-    if match:
-        return match.group(1), text
-    lowered = text.lower()
-    return ("fail" if "fail" in lowered else "pass"), text
+    return _parse_judge_verdict(text), text
