@@ -1,0 +1,98 @@
+{
+  "candidate": "starting-version-model-2",
+  "case_count": 3,
+  "cases": [
+    {
+      "case_id": "e-005",
+      "expected_write": false,
+      "failure_modes": [
+        "tool escalate_to_human called"
+      ],
+      "latencies_seconds": [
+        37.6427
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "tool escalate_to_human called"
+          ],
+          "final_reply": "I\u2019m going to look up order #2493 so I can tell you exactly how much you paid for the Rustic Pitcher and whether that specific item is still eligible for a return.\nNext, I\u2019m going to check Cartwheel\u2019s return/refund policy so I can explain why this order is (or isn\u2019t) still returnable.\nI\u2019m going to search the help center for the specific returns policy that covers whether delivered items can still be returned after a certain number of days.\nI\u2019m going to locate the platform-wide (default) returns policy, since your order\u2019s return eligibility can depend on the default return window if no store-specific rule applies.\nI\u2019m going to search the help center specifically for a policy titled or tagged \u201creturns,\u201d to get the exact platform return window wording.\nI\u2019m going to open the Cartwheel refund policy to see the return window details that govern whether your delivered item is still returnable.\nI\u2019m going to check the specific return/refund rules for the Blue Heron Ceramics store, because store-specific return windows can override the platform default.\nI\u2019m going to look up the store policy for \u201cBlue Heron Ceramics\u201d (the store that fulfilled your order) to determine the return window that applies to your purchase.\nI\u2019m going to search the help center for the general (platform default) return window wording (e.g., \u201c30 days of delivery\u201d) so we can determine eligibility for your order.\nI\u2019m going to search for the help-center policy that defines when an order becomes \u201cnot eligible for refund/return,\u201d since that\u2019s reflected on your order.\nI\u2019m going to open the \u201cCartwheel return policy\u201d (policy id cw-returns) to confirm the exact return window and conditions.\nHere\u2019s what I see for **order #2493** (Rustic Pitcher):\n\n### How much you paid\n- **Total paid:** **$98.25** (quantity 1)\n\n### Can you still return it?\n**Probably not.** Your order shows it was **delivered on 2025-12-19**, and Cartwheel\u2019s return policy is:\n\n- **Items can be returned within 30 days of delivery** (the window counts",
+          "judge_reasons": {},
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        15.0785
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "I\u2019m going to look up your recent Cartwheel orders so I can identify the one that was charged twice and check whether it\u2019s eligible for a refund.\nTo fix this quickly, I\u2019m going to pull up the details for your most recent candidate orders so we can confirm which one (or ones) can be refunded for a duplicate charge.\nI can help, and I\u2019ve checked your most recent refund-eligible orders to be ready to process the right refund as soon as you confirm which one was charged twice.\n\nHere are the latest candidate orders on your account (all currently marked **refund eligible**):\n\n1) **Order #4455** \u2014 **$240.00** \u2014 status: delivered (Blue Heron Ceramics)  \n2) **Order #4127** \u2014 **$84.00** \u2014 status: delivered (Blue Heron Ceramics)  \n3) **Order #1689** \u2014 **$25.00** \u2014 status: delivered (Atlas Stationery)\n\n**Quick question so I refund the correct charge right now:**  \nWhich order ID (or dollar amount) shows up **twice** on your bank/receipt\u2014$240, $84, or $25?  \nAlso, are the duplicate charges **pending** or **fully posted**?\n\nReply with something like: \u201cIt\u2019s the $84 one (Order #4127), posted\u201d and I\u2019ll issue the refund for the correct order immediately.",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent begins by looking up the customer's recent orders, which is a good first step. However, the request from the customer was about a duplicate charge, which is a billing dispute and should have led to an escalation to a human support agent instead of attempting to resolve it through order lookups and refunds. The agent does provide a list of recent orders and asks a clarifying question about which order was charged twice, but this approach is incorrect for the nature of the request. The agent should not have proceeded with identifying orders or asking for confirmation on which order was charged twice; instead, it should have escalated the issue immediately. Therefore, the handling of the request does not align with the Pass criteria, as it fails to recognize the need for escalation in a billing dispute.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        47.7201
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "Got it\u2014I'll check the most recent \u201cheavy duty vase\u201d order on your account first (order #4455) to confirm it\u2019s eligible for a refund and to verify the exact refund amount before I submit the refund request.\nGreat\u2014order **#4455** is marked **refund-eligible**, so I\u2019ll go ahead and submit a **full refund request for $240.00** now (since it\u2019s over $100, it may be queued for human review per the refund policy).\nAll set\u2014I submitted the refund for the **most recent \u201cheavy duty vase\u201d order**.\n\n### Refund request submitted\n- **Order:** **#4455**\n- **Item total refunded:** **$240.00**\n- **Refund status:** **Queued for approval** (human review)\n- **Refund ID:** **575**\n\n### Why it\u2019s queued\nCartwheel\u2019s refund policy says:\n- **Refunds of $100 or less** execute automatically once eligible\n- **Refunds above $100** are **queued for human review** first (**cw-refunds**)\n\nSince your refund is **$240**, it went into the human-approval queue.\n\nIf you want, tell me whether you\u2019d like the refund to be **to the original payment method only** (that\u2019s what Cartwheel uses by policy), and I can also help with next steps while it\u2019s being reviewed.",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent assumed that the customer was referring to order #4455 for the 'heavy duty vase' without first asking for confirmation or clarification. This is a violation of the requirement to ask a specific clarifying question before acting on a vague request. The customer did not provide an order number or any specific details about the order, making it ambiguous. The agent should have asked the customer to confirm the order number or provide more details before proceeding with the refund request. Therefore, the agent's actions do not align with the Pass criteria, as it silently picked a specific order and acted on it without proper clarification.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.765273,
+  "cost_usd": 0.022958,
+  "created_at": "2026-10-08T17:33:35.885873+00:00",
+  "evaluated_case_runs": 3,
+  "git_commit": "a7e875a20f17b0a241a1c60d922dcc82347d541a",
+  "input_tokens": 71991,
+  "median_latency_seconds": 37.6427,
+  "model": "gpt-5.4-nano",
+  "output_tokens": 6848,
+  "price_date": "2026-10-02",
+  "prompt_sha256_12": "7b769c29fb8e",
+  "schema_version": 1,
+  "score": 0.0,
+  "split": "test",
+  "test_plan_sha256": "c270cc7262a0a0357b9ec235d593c0a29aed390a3683a6fef0393e694a36275b",
+  "write_pass_5": null
+}

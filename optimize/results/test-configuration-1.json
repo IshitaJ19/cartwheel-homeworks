@@ -1,0 +1,94 @@
+{
+  "candidate": "starting-version-model-1",
+  "case_count": 3,
+  "cases": [
+    {
+      "case_id": "e-005",
+      "expected_write": false,
+      "failure_modes": [
+        "tool escalate_to_human called"
+      ],
+      "latencies_seconds": [
+        58.6019
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "tool escalate_to_human called"
+          ],
+          "final_reply": "I'll look up order 2493 to confirm the exact price you paid for the Rustic Pitcher and check whether that item (and the order) is still eligible for return.\nI'll look up Cartwheel's help center articles to confirm the standard return window and policy rules that determine whether delivered orders can still be returned.\nI'll open the Cartwheel return policy (policy id cw-returns) to quote the exact return window and the key conditions.\nI'll fetch Blue Heron Ceramics' store info to check whether that store overrides Cartwheel's default return window for its products.\nThanks \u2014 I looked up your order and the return rules to confirm.\n\nSummary of what I found\n- Price you paid: The Rustic Pitcher on order 2493 (Blue Heron Ceramics, quantity 1) shows a total charge of $98.25.\n- Delivery date: The order was delivered on 2025-12-19.\n- Return eligibility: Cartwheel\u2019s standard return policy allows returns within 30 days of delivery (cw-returns). Blue Heron Ceramics does not have a store-level override on the return window (store info shows no override). Because the item was delivered 2025-12-19, the 30-day return window expired on 2026-01-18, and the order is therefore outside the standard return window; the order record also shows it is not refund/return eligible.\n\nPolicy reference\n- Cartwheel return policy: Items can be returned within 30 days of delivery (cw-returns).\n\nOptions if you want help\n- If the Rustic Pitcher is defective, damaged, or materially not as described, we can request an exception and investigate \u2014 please tell me the problem and attach photos if you have them; I can escalate the case to a human reviewer for you.\n- If you prefer to contact the seller directly, I can show you how to message Blue Heron Ceramics from your order page or provide the store link.\n- If you want me to escalate this for human review now, say \u201cPlease escalate\u201d and include a short description of the issue (and photos if available) \u2014 I\u2019ll open a human review with the order details.\n\nWhic",
+          "judge_reasons": {},
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        33.6668
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "I'll search the Help Center for Cartwheel's refund and duplicate-charge policy so I can explain eligibility, timelines, and when a refund needs human escalation.\nI\u2019m really sorry you\u2019re seeing what looks like a double charge \u2014 I know that\u2019s stressful, and I\u2019ll help get it sorted.\n\nQuick important note: I can\u2019t issue a refund right away; I need to check the order and its refund eligibility first (I\u2019ll run an order lookup and follow the refund rules). Per our Help Center, approved refunds go back to the original payment method and usually appear in 5\u201310 business days, and refunds of $100 or less execute automatically once the order passes the eligibility check (cw-refunds). Also, if someone opens a charge dispute it\u2019s handled by a human agent and pauses any pending refund on that same order (cw-disputes).\n\nTwo ways we can proceed \u2014 pick whichever is easiest for you:\n\n1) Give me the order info\n- What I need: the order number (example: #12345), the email used for the order, and/or the last 4 digits of the card used; the date and amount(s) of the suspected duplicate charge(s); and, if possible, a screenshot of the bank/credit statement showing the two charges.\n- If you give me the order number, I\u2019ll look up that order to confirm payments and refund eligibility and then tell you the next steps. (If you decide to give the order number now, say so and I\u2019ll explain exactly what I\u2019m about to look up before I run the check.)\n\n2) Let me search your recent orders for the charge\n- If you don\u2019t have the order number handy, you can say \u201cYes, please check my recent orders\u201d and I\u2019ll pull your recent orders to find the matching charge. I\u2019ll explain what I\u2019m about to look up before I run that search.\n\nWhat I\u2019ll do after I find the order\n- I will check the order\u2019s payment records and refund eligibility. If it\u2019s eligible and under the automatic threshold, I can trigger the automatic refund flow; if it\u2019s over the threshold or requires a manual review, I\u2019ll escalate to a human agent to fin",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent correctly identifies the customer's issue as a potential double charge and provides a detailed explanation of the refund and dispute policies. However, the agent does not ask a specific clarifying question to gather necessary information before proceeding. Instead, it offers two options for the customer to choose from, which could be seen as a way to gather information but lacks the specificity of a direct question that would allow the agent to act confidently. The agent should have asked for the order number or specific details directly before offering to search recent orders or explaining the policies. This leads to ambiguity in the conversation, as the agent is not confirming which order or charge the customer is referring to. Therefore, the lack of a clear, actionable clarifying question results in a failure to meet the criteria for a Pass.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        125.8677
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll fetch the full details for order 4455 so I can confirm its refund eligibility, total amount, and delivery info before taking any refund actions.\nI'll open a ticket for a human agent to review and approve the $240 refund for order 4455, since refunds above $100 require manual approval (cw-refunds).\nThanks \u2014 I\u2019ve checked the most recent heavy-duty vase order and started the next step.\n\nWhat I found\n- Order 4455 (Blue Heron Ceramics)\n  - Ordered: 2026-06-21 \u2014 Delivered: 2026-06-26\n  - Total: $240.00\n  - Status: delivered\n  - Refund eligible: yes (per the order record I checked)\n\nWhat I did for you\n- Because this order is over $100, it requires a human review before any refund can be issued (cw-refunds). I opened a support ticket for a manual refund review and approval.\n  - Ticket ID: 151\n  - Expected SLA: a human agent should respond within 24 hours (ticket SLA included in the escalation result)\n  - Policy note: refunds above $100 are queued for human review; if approved, refunds go back to the original payment method and typically arrive in 5\u201310 business days after approval (cw-refunds).\n\nWhat I need from you (optional, but it speeds review)\n- If there\u2019s a reason for the refund (e.g., damaged, defective, not-as-described), please reply here with that reason and any photos you have \u2014 I\u2019ll add them to the ticket to help the agent process your request faster.\n- If you prefer, I can instead try the automatic refund flow for your earlier $84 order (order 4127) which is under $100 and would auto-execute if you want that refunded instead.\n\nNext steps\n- A human agent will review ticket #151 and follow up via your Cartwheel support channel; I\u2019ll also monitor the ticket and update you here if the agent asks for anything else.\n- If you want me to add a reason or photos to the ticket now, paste them here and I\u2019ll attach them.\n\nIf you want me to do anything different (cancel the request, refund a different order, or escalate with extra details now), tell me and I\u2019ll take care",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent correctly identified that the request involved a refund for order 4455, which is over $100 and requires manual approval. The agent escalated the case to a human support agent, which is the appropriate action for this type of request. The agent provided detailed information about the order and the refund process, including the ticket ID and expected response time. Since the request was for a refund above the approval threshold, the escalation itself is sufficient and meets the Pass criteria. There was no need for a clarifying question in this case, as the agent's actions were aligned with Cartwheel's policy for handling refunds over $100. Therefore, the conversation is evaluated as a Pass.\",\n  \"result\": \"Pass\"\n}"
+          },
+          "passed": true
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 1.942167,
+  "cost_usd": 0.058265,
+  "created_at": "2026-10-08T17:31:43.756769+00:00",
+  "evaluated_case_runs": 3,
+  "git_commit": "a7e875a20f17b0a241a1c60d922dcc82347d541a",
+  "input_tokens": 64044,
+  "median_latency_seconds": 58.6019,
+  "model": "gpt-5-mini",
+  "output_tokens": 21127,
+  "price_date": "2026-10-02",
+  "prompt_sha256_12": "7b769c29fb8e",
+  "schema_version": 1,
+  "score": 0.333333,
+  "split": "test",
+  "test_plan_sha256": "c270cc7262a0a0357b9ec235d593c0a29aed390a3683a6fef0393e694a36275b",
+  "write_pass_5": null
+}

@@ -1,0 +1,98 @@
+{
+  "candidate": "starting-version-model-3",
+  "case_count": 3,
+  "cases": [
+    {
+      "case_id": "e-005",
+      "expected_write": false,
+      "failure_modes": [
+        "tool escalate_to_human called"
+      ],
+      "latencies_seconds": [
+        95.5103
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "tool escalate_to_human called"
+          ],
+          "final_reply": "I will fetch the details of order 2493 to find the Rustic Pitcher item\u2019s price and determine its refund eligibility.\nTo confirm whether an item can be returned and within what timeframe, I will look up our official returns policy in the help center (cw-returns).\nNow I will fetch the general returns policy (cw-returns) to confirm the standard return window and conditions for items.\nHere\u2019s what I found for order 2493 and the Rustic Pitcher:\n\n- Price paid for the Rustic Pitcher: $98.25 (quantity 1). The order total is $98.25.\n- Return eligibility: Not eligible for a refund under our standard policy. The order shows refund_eligible as False, and the delivery date was 2025-12-19. Our general Cartwheel return policy allows returns within 30 days of delivery (delivery date counts, not purchase date). Since the 30-day window closed on 2026-01-18, it\u2019s well past the window. Store overrides can apply, but Blue Heron Ceramics doesn\u2019t show a store-specific override in our system here, so the default applies. Policy reference: cw-returns.\n\nPolicy citation: cw-returns (Cartwheel return policy)\n- Text: Items bought on Cartwheel can be returned within 30 days of delivery. The window counts from the delivery date, not the purchase date. Individual stores may override this window; see the store overrides policy and the store's own policy page.\n\nWhat you\u2019d like to do next:\n- If you believe there\u2019s a defect or extenuating circumstance, I can escalate this for a manual review by a human agent to see if an exception can be made. Would you like me to escalate the case?",
+          "judge_reasons": {},
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-009",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        135.2763
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "I'll first pull up your recent orders to identify any duplicate charges and find an order that could be refunded.\nI'll check the details of order 4455 to confirm its refund eligibility and see if it matches a potential duplicate charge.\nOrder 4455 looks eligible for a refund, and it\u2019s the most likely candidate tied to a potential duplicate charge. I\u2019ll initiate a refund for $240.00 for this order with a note referencing a possible duplicate charge.\nI'll look up Cartwheel's refunds policy to confirm the auto-approval threshold and any steps for refunds above that amount.\nThis refund is above the auto-approval threshold ($100), so I need a human agent to review and finalize it. I'm escalating the case with the current details.\nI\u2019m glad you reached out \u2014 I\u2019m sorry about the double charge. Here\u2019s what I found and what I did just now.\n\nWhat I did and what it means\n- I checked your recent orders. The most relevant one for a potential duplicate charge is order 4455 with Blue Heron Ceramics, total $240.00, delivered.\n- Order 4455 is eligible for a refund. I initiated a refund for $240.00 for this order because it matches your report of a duplicate charge.\n- Because this refund amount is over $100, it\u2019s not auto-approved and is currently queued for human review (as expected per our policy guidelines). Refund ID: 575. Status: queued_for_approval.\n- I\u2019ve escalated this case to a human agent for final review. You\u2019ll see ticket details below.\n  - Escalation ticket: 151\n  - SLA: 24 hours\n\nPolicy reference\n- Our refund policy cw-refunds states: refunds of $100 or less execute automatically after eligibility checks; refunds above $100 are queued for human review before approval. Once approved, refunds go back to the original payment method and typically arrive in 5-10 business days. I\u2019ve cited cw-refunds to guide this process.\n\nWhat to expect next\n- A human support agent will review order 4455 and the refund request. If they approve the refund, the money will be returned to your or",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent correctly identified the customer's issue regarding a potential duplicate charge and initiated a refund process for order 4455, which was eligible for a refund. However, the agent did not ask a clarifying question before assuming that order 4455 was the correct one related to the duplicate charge. The customer mentioned a double charge but did not specify which order it pertained to, leaving room for ambiguity. The agent's action of selecting order 4455 without first confirming with the customer constitutes a failure to ask a specific clarifying question. Although the agent escalated the case appropriately due to the refund amount exceeding the auto-approval threshold, the initial assumption about the order without clarification is a violation of the guidelines.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-010",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        187.5987
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "To proceed accurately, I\u2019ll pull the full details for the most recent heavy vase order, which is order 4455, to confirm its delivered status and current refund eligibility so I can process a refund if you want.\nGreat catch. The most recent heavy vase order is order 4455 from Blue Heron Ceramics.\n\nOrder 4455 details (most recent vase)\n- Store: Blue Heron Ceramics\n- Order date: 2026-06-21\n- Delivered: 2026-06-26\n- Amount: $240.00\n- Refund eligibility: True (this is eligible for a refund) [policy: cw-returns]\n- Refunds are issued to the original payment method (policy: cw-refunds)\n\nWhat I can do next\n- I can refund the full $240.00 to your original payment method for order 4455. This typically takes 3\u20135 business days to appear on your statement. Note that large refunds may be queued for human review per our refund policy (cw-refunds).\n\nWhat I need from you\n- Please confirm that you want me to refund the full $240.00 for order 4455.\n- Please provide a brief reason for the refund (e.g., \u201cChanged my mind,\u201d \u201cNot as described,\u201d \u201cDamaged on arrival,\u201d etc.). This helps with the processing.\n\nOptional\n- If you\u2019d prefer a different amount or want me to escalate for a faster human review, I can handle that too.\n\nWould you like me to proceed with the full refund of 4455 for $240.00? If yes, share your refund reason.",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent's response begins with a specific order reference (order 4455) based on the customer's vague request about a 'heavy vase order.' However, the agent assumes that order 4455 is the correct one without first asking the customer to confirm which order they meant. This is a violation of the requirement to ask a clarifying question before guessing or acting, as there could be multiple orders that fit the description of a 'heavy vase.' The agent should have asked the customer to confirm the order number or provide additional details before proceeding with the refund process. Therefore, the agent's actions lead to a Fail as it does not adhere to the guidelines for handling ambiguous requests.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.65661,
+  "cost_usd": 0.019698,
+  "created_at": "2026-10-08T17:40:45.114229+00:00",
+  "evaluated_case_runs": 3,
+  "git_commit": "a7e875a20f17b0a241a1c60d922dcc82347d541a",
+  "input_tokens": 95190,
+  "median_latency_seconds": 135.2763,
+  "model": "gpt-5-nano",
+  "output_tokens": 37347,
+  "price_date": "2026-10-02",
+  "prompt_sha256_12": "7b769c29fb8e",
+  "schema_version": 1,
+  "score": 0.0,
+  "split": "test",
+  "test_plan_sha256": "c270cc7262a0a0357b9ec235d593c0a29aed390a3683a6fef0393e694a36275b",
+  "write_pass_5": null
+}
