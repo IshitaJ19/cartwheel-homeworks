@@ -340,8 +340,10 @@ def _flag_ambiguous_matches(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
             result = dict(result)
             result["ambiguity_note"] = (
                 "More than one order matched this search. Do not pick one or act "
-                "on any of them yet -- list the matches for the customer and ask "
-                "which order they mean before taking any further action."
+                "on any of them yet, and do not describe, list, or state details "
+                "about any of the specific matches in your reply -- simply ask the "
+                "customer for an order number or approximate purchase date before "
+                "taking any further action."
             )
     return result
 
