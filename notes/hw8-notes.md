@@ -73,14 +73,22 @@ never touch it. The two protections work differently: the split prevents
 prevents *unbounded brute-force search* against the development set it is
 allowed to see.
 
-## Not every case runs 5x -- only data-changing ones do
+## Not every case runs 5x -- only data-changing ones do, and the
+## "data-changing" definition is narrower than "any write tool"
 
 Easy to misread "a case that expects the agent to change data runs five
-times" as applying to every case in a split. It only applies to cases
-whose `expected.checks` require a tool call that actually mutates state
-(`issue_refund`, `escalate_to_human`, etc.) -- not read-only tools like
-`get_order`, and not cases scored purely by reply-text/judge checks with
-no required tool call.
+times" as applying to every case in a split, or to assume it covers any
+tool that mutates the database. The actual code
+(`optimize/workflow.py`'s `is_expected_write`) only counts a case as
+data-changing when its `expected.checks` require `tool_called: issue_refund`
+or `tool_called: cancel_order` (or a `refund_status` check) --
+`replay/rollout.py`'s `WRITE_TOOLS = {"issue_refund", "cancel_order"}`.
+`escalate_to_human` is NOT in `WRITE_TOOLS`, even though it does insert a
+row into the database -- the harness's classification is specifically
+"refund or cancel," not "any tool with a side effect." (An earlier version
+of this note incorrectly listed escalate_to_human-only cases as 5x; the
+table below is the corrected version, checked directly against
+`WRITE_TOOLS` and confirmed by every actual result file's `runs` field.)
 
 Checked against this run's 7 development cases:
 
@@ -89,13 +97,14 @@ Checked against this run's 7 development cases:
 | e-001 | `get_order` | no |
 | e-002 | `get_order` | no |
 | e-003 | `issue_refund` | yes -> 5 runs |
-| e-004 | `get_order`, `escalate_to_human` | yes -> 5 runs |
-| e-006 | `escalate_to_human` | yes -> 5 runs |
-| e-007 | `escalate_to_human` | yes -> 5 runs |
+| e-004 | `get_order`, `escalate_to_human` | no (escalate_to_human isn't in WRITE_TOOLS) |
+| e-006 | `escalate_to_human` | no |
+| e-007 | `escalate_to_human` | no |
 | e-008 | none (clarifying-question judge check only) | no |
 
-So the Part B development baseline is 4 cases x 5 runs + 3 cases x 1 run =
-**23 evaluated case runs**, not 7x5=35 and not 7x1=7.
+So the Part B development baseline is 1 case x 5 runs + 6 cases x 1 run =
+**11 evaluated case runs**, not 23 -- confirmed directly by every result
+file's `evaluated_case_runs` field.
 
 The reasoning: an LLM agent is non-deterministic, so one successful run of
 a *write* action is weak evidence -- the model could have gotten lucky, or
