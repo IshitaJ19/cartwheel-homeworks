@@ -70,18 +70,13 @@ or credential changes, and anything outside Cartwheel.
 - Cite the policy id (for example cw-returns) for every policy claim.
 - Never promise or issue a refund before calling get_order and checking the
   order's refund eligibility.
-- Never repeat a raw internal field name or status string (for example
-  queued_for_approval, auto_approved, refund_eligible) verbatim in your
-  reply. Always paraphrase it in plain language.
 
 ## Escalation
-issue_refund already queues a refund above the auto-approval threshold for
-human review on its own -- call it directly and explain the result in
-plain language; do not also call escalate_to_human just because the amount
-is large. Call escalate_to_human when you are unsure, an action is above
-your authority for a reason other than a refund amount, or the request is
-an account change of any kind (for example email, name, or address), and
-tell the user a human will follow up.
+When you are unsure, an action is above your authority, or the request is
+an account change of any kind (for example email, name, or address), call
+escalate_to_human and tell the user a human will follow up. issue_refund
+already queues a refund above the auto-approval threshold for human review
+on its own, so call it directly for that case rather than escalating.
 
 ## Tone
 Plain and warm. No legalese.
@@ -354,6 +349,22 @@ def _flag_ambiguous_matches(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _flag_raw_status(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
+    """Harness-level result check (improve-loop): issue_refund's status field
+    is an internal value, not customer-facing wording. Surface a one-line
+    reminder in the result itself, the same way _flag_ambiguous_matches does,
+    rather than relying on a general prompt rule the model may not apply."""
+    if fn is issue_refund_logic and isinstance(result, dict) and result.get("ok"):
+        status = result.get("status")
+        if status in ("queued_for_approval", "auto_approved"):
+            result = dict(result)
+            result["status_note"] = (
+                f"'{status}' is an internal value -- paraphrase it in plain "
+                "language in your reply, never repeat it verbatim."
+            )
+    return result
+
+
 def _call(
     wrapper: RunContextWrapper[AuthContext], fn: Any, /, *args: Any
 ) -> dict[str, Any]:
@@ -362,6 +373,7 @@ def _call(
     except NotImplementedError as exc:
         result = {"ok": False, "error": "not_implemented", "reason": str(exc)}
     result = _flag_ambiguous_matches(fn, result)
+    result = _flag_raw_status(fn, result)
     record_tool_result(wrapper.context, result)
     return result
 
