@@ -1,0 +1,215 @@
+{
+  "candidate": "harness_change",
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "e-001",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        65.6638
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll first fetch the details of order 117 to check its status and whether it's eligible for a refund under our returns policy.\nI'll look up Cartwheel's returns policy to confirm the eligibility window and any conditions for returning scented bath salts, citing the policy as cw-returns.\nI'll search for general returns policy details (not store-specific) by querying for \"returns\" to find the main cw-returns policy.\nGreat news\u2014this order shows refund eligibility. I will initiate a refund for the full order amount ($20.50) to the original payment method with the reason: customer requested refund due to scent not meeting expectations.\nGood news \u2014 I can help with this. I checked order 117, and it is eligible for a refund.\n\nHere\u2019s what\u2019s been done and what to expect:\n- Refund amount: $20.50 (full order total)\n- Refund ID: 575\n- Status: Auto-approved\n- To: Original payment method\n- Timing: Refund should appear on your payment method in about 5\u201310 business days\n- Reason on the refund: Customer requested refund due to scent not meeting expectations\n\nWhat next?\n- If you\u2019d like, I can also help you with an exchange for a different scent or issue store credit instead. Just tell me what you\u2019d prefer and I\u2019ll set it up.\n- If you want to monitor the refund, you can check the order page for updates, or I can keep an eye on it for you.\n\nPolicy note:\n- This refund is processed under Cartwheel\u2019s returns policy (policy id cw-returns). If you\u2019re ever unsure about eligibility for a future purchase, I can pull up the relevant policy details for you.\n\nWould you like me to arrange an exchange or store credit, or is the refund exactly what you needed?",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-002",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        81.1675
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll first fetch the details of order 3980 to check its current status and whether it's eligible for a refund. This will tell me if a refund can be issued automatically or if a human needs to review it.\nI'll look up the official returns policy (cw-returns) in our Help Center to quote the return window and any eligibility rules that apply to this order.\nI'll search for the general return window terminology (e.g., \"returns window\" or \"return within days\") to find the applicable policy details I can cite.\nI'll check if the Blue Heron Ceramics store has any policy overrides that could affect refund eligibility, in case there\u2019s an exception that applies to this order.\nI'll search for the general platform default return window (30 days) to cite the standard policy if there's no store override.\nThanks for checking in. I looked up order 3980 to verify its status and refund eligibility.\n\nWhat I found\n- Order: 3980\n- Store: Blue Heron Ceramics\n- Item: Heavy-Duty Vase (1)\n- Total: $52.00\n- Status: Delivered\n- Delivered at: 2026-05-17\n- Refund eligible: False\n\nWhy no refund\n- Our Cartwheel return policy (cw-returns) allows returns within 30 days of delivery. The window counts from the delivery date. Since this order was delivered on 2026-05-17 and it\u2019s now well past 30 days, it\u2019s outside the eligible window. cw-returns policy reference: Cartwheel return policy (cw-returns). \n- Blue Heron Ceramics has no store-level override for the return window (return_window_days_override is None), so the platform default applies.\n\nWhat you can do next\n- If you\u2019d like, I can escalate this for a discretionary human review to see if an exception can be made. Note that exceptions are not guaranteed and depend on the merchant.\n- I can also help you review any alternative options the merchant might offer (for example, store credit or an exchange) if applicable, though these would be at the merchant\u2019s discretion.\n\nWould you like me to escalate this to a human support agent for an exception review? ",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-003",
+      "expected_write": true,
+      "failure_modes": [
+        "reply does not contain 'queued_for_approval'",
+        "tool issue_refund called"
+      ],
+      "latencies_seconds": [
+        45.3646,
+        58.7821,
+        117.8476,
+        58.355,
+        50.091
+      ],
+      "pass_rate": 0.2,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "reply does not contain 'queued_for_approval'"
+          ],
+          "final_reply": "I'll look up order 4455 to verify its refund eligibility and review the order status and item condition before proceeding with any refund decisions.\nThe order shows as delivered and eligible for refunds, and you reported the item arrived cracked. I will issue a full refund of $240 for order 4455 with the reason \"Item arrived damaged.\"\nI'm escalating this to a human agent for final approval since the refund amount exceeds the auto-approval threshold. I'll summarize the case for the agent and include the relevant order details.\nI'm really sorry the vase arrived cracked. Here\u2019s where things stand and what I did just now:\n\nWhat I checked and did\n- Looked up order 4455 to confirm status and refund eligibility. It shows as delivered and eligible for a refund (cw-returns policy reference).\n- Initiated a full refund of $240 to your original payment method for order 4455 because the item arrived damaged.\n- Because the refund amount is above the auto-approval threshold, it\u2019s been queued for human approval.\n  - Refund ID: 575\n  - Status: queued_for_approval\n- Escalated to a human agent for final confirmation. Ticket ID: 151. SLA: 24 hours. The human team will review and finalize the refund decision.\n\nWhat this means for you\n- A human agent will review and either approve the refund (finalizing the process) or request any additional information.\n- You should hear back within about 24 hours. If approved, the refund will be issued to your original payment method. Actual posting times depend on your bank or card issuer (usually a few business days after processing).\n\nOptional ways to speed things up\n- If you have photos of the cracked vase and the packaging, sending them can help the agent verify the damage quickly. You can reply with them here or attach them in chat.\n- If you\u2019d prefer a replacement instead of a refund, I can explore that option with the agent as well.\n\nNext steps\n- I\u2019ll stay on the thread and update you as soon as the human agent completes the review.\n- If you\u2019d l",
+          "judge_reasons": {},
+          "passed": false
+        },
+        {
+          "error": null,
+          "failure_modes": [
+            "tool issue_refund called"
+          ],
+          "final_reply": "I\u2019m going to look up order 4455 to confirm its status and whether a refund is eligible, and I\u2019ll also pull up our returns policy for damaged or defective items to ensure I follow the correct process.\nI found that order 4455 is delivered and currently marked as eligible for a refund, but the amount ($240) requires human review per our policy. I\u2019ll escalate this to a human agent to process the refund and handle any required checks or next steps.\nThanks for the clear info. I pulled up order 4455 to check the status and confirms the refund path.\n\nWhat I found\n- Order 4455 (Heavy-Duty Vase) from Blue Heron Ceramics\n  - Status: Delivered (delivered 2026-06-26)\n  - Total: $240.00\n  - Refund eligibility: True\n\nPolicy context\n- Refunds over $100 go through human review before processing. This is per our refund policy cw-refunds. I\u2019m following the process exactly, and the large refund requires a human agent to approve. I\u2019ve escalated this accordingly. Policy: cw-refunds.\n\nWhat I did just now\n- Opened a human-support ticket to review and process your refund due to the item arriving cracked. Ticket ID: 151. SLA: about 24 hours for a human agent to respond.\n\nNext steps and options\n- A human agent will review your case and, if approved, process the refund to your original payment method. Once the refund is issued, it typically takes 5\u201310 business days to appear on your statement.\n- If you have photos of the crack and the packaging, please share them to speed things up. You can upload photos here or respond to the ticket with them.\n- If you\u2019d prefer a replacement instead of a refund, you can mention that to the agent in your reply. They\u2019ll confirm what\u2019s possible under the store\u2019s policy.\n- If you want to add any extra details (e.g., order number in the subject, specific damage spots, packaging condition), include them in this chat or in your reply to ticket 151.\n\nWhat you can expect\n- A human agent will reach out through this chat or the ticket with next steps within about 24 hou",
+          "judge_reasons": {},
+          "passed": false
+        },
+        {
+          "error": null,
+          "failure_modes": [
+            "reply does not contain 'queued_for_approval'"
+          ],
+          "final_reply": "I'll look up order 4455 to confirm its current status and whether it's eligible for a refund due to damage, so I don't promise anything before verifying the details.\nNext, I'll search Cartwheel's help center for the returns policy on damaged items to confirm the exact policy and cite it (likely cw-returns).\nI'll fetch the full text of the cw-returns policy to quote the exact return window and requirements for damaged items.\nI'll check the Blue Heron Ceramics store policy overrides to confirm any special return conditions beyond the general Cartwheel policy.\nThe order check shows it\u2019s delivered with refund eligibility flagged in the system, so I\u2019ll proceed to issue a full refund of $240 for order 4455 due to the cracked vase, citing the general return policy and noting there\u2019s no store override from Blue Heron Ceramics.\nThis refund amount is above the auto-approval threshold and requires a human decision, so I\u2019ll escalate the case to a human agent with a summary and context.\nI\u2019m sorry the Heavy-Duty Vase arrived cracked\u2014that\u2019s frustrating. Here\u2019s what I found and what I\u2019ve done.\n\nWhat I checked and why\n- I pulled up order 4455 to verify its status and refund eligibility, so I don\u2019t promise anything before confirming the details.\n- I checked Cartwheel\u2019s general return policy to confirm the rules around refunds (cw-returns).\n- I checked the Blue Heron Ceramics store for any override on the return window.\n- I issued the refund and then escalated it for human approval because the amount is above the auto-approval threshold.\n\nWhat I found\n- Order: 4455 from Blue Heron Ceramics\n  - Item: Heavy-Duty Vase\n  - Status: Delivered (delivered 2026-06-26)\n  - Total: $240.00\n  - Refund eligibility: True (in the system)\n- Policy context\n  - General Cartwheel return policy: Items can be returned within 30 days of delivery (window starts at delivery date). Some stores may override the window (cw-returns). Store override for Blue Herons Ceramics: None, i.e., no override detected.\n  - S",
+          "judge_reasons": {},
+          "passed": false
+        },
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll fetch the order details for order 4455 to verify its refund eligibility and determine the correct amount to refund based on the item price and any shipping or damages.\nThe order shows refund eligibility and the total is 240 USD, so I will issue a full refund for order 4455 due to the item arriving cracked. Proceeding to process the refund now.\nThis refund amount requires human approval due to policy thresholds, so I will escalate this case to a human agent for final processing. I'll include the summary and context for the agent.\nI\u2019m sorry the vase arrived cracked\u2014let me get this sorted for you.\n\nHere\u2019s the latest on order 4455 (Heavy-Duty Vase, Blue Heron Ceramics):\n- Order details: Total 240 USD; Delivered 2026-06-26; Refund eligible\n- Refund initiated: Full refund of 240 USD to your original payment method\n- Auto-approval note: Since the amount is above the $100 auto-approval threshold, the refund is queued for human approval\n- Refund reference: Refund ID 575\n- Escalation: A human agent has been assigned to review (Ticket ID 151) with a 24-hour SLA\n\nWhat happens next:\n- A human agent will review and finalize the refund within the 24-hour window. You\u2019ll get a notification once it\u2019s approved and processed.\n\nExtras:\n- If you have photos of the damage, feel free to reply here with them to speed up the review.\n- If you\u2019d prefer a replacement vase instead of a refund, I can note that preference for the agent to consider.\n\nWould you like to attach any photos of the cracked vase, or should I pass along any additional details to the agent?",
+          "judge_reasons": {},
+          "passed": true
+        },
+        {
+          "error": null,
+          "failure_modes": [
+            "tool issue_refund called"
+          ],
+          "final_reply": "I will look up the details of order 4455 to confirm its refund eligibility and the refund amount due, so I can proceed correctly per our policy.\nI will look up our refund policy, especially for damaged items and any auto-approval thresholds, to determine whether I can process this refund automatically or if a human needs to review it.\nI will escalate this refund request to a human agent for review since the requested amount ($240) exceeds the auto-approval threshold, and the customer reports a damaged item. I\u2019ll include the order details and context to help the agent act quickly.\nI\u2019m sorry the vase arrived cracked\u2014that\u2019s frustrating. Here\u2019s what I found and what I\u2019m doing next.\n\nWhat I checked\n- Order 4455 (Heavy-Duty Vase) from Blue Heron Ceramics: delivered, total $240, refund eligibility: True. This confirms you\u2019re eligible for a refund, and the amount is $240.\n\nWhat this means per policy\n- Auto-approval threshold: refunds of $100 or less auto-approve after eligibility checks. Refunds above $100 require human review. This is why I\u2019m escalating your case instead of processing it directly. (Policy: cw-refunds)\n- Escalation workflow: cases like this are escalated to a human agent, who should respond within 24 hours. (Policy: cw-escalations)\n\nWhat I\u2019ve done\n- Escalated your refund request to a human agent. Ticket ID: 151. SLA: 24 hours.\n- They\u2019ll determine the exact handling (full refund to the original payment method, or potentially an alternative like a replacement) based on damage and policy.\n\nWhat you can do to speed things up\n- If you haven\u2019t already, please share clear photos of the cracked vase and the packaging. This helps the human agent verify the damage and process the refund faster.\n\nWhat to expect next\n- A human agent will review and respond within about 24 hours. If approved, the refund will be issued to your original payment method and typically take 5\u201310 business days to appear on your statement after processing (per the refund policy).\n- If you\u2019d pre",
+          "judge_reasons": {},
+          "passed": false
+        }
+      ],
+      "runs": 5
+    },
+    {
+      "case_id": "e-004",
+      "expected_write": false,
+      "failure_modes": [
+        "tool escalate_to_human called"
+      ],
+      "latencies_seconds": [
+        35.9062
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "tool escalate_to_human called"
+          ],
+          "final_reply": "I will look up your specific order (8001) to see the delivery date and current refund eligibility, so I can tell you when the return window ends. Then I can cross-check the standard return policy if needed.\nHere\u2019s what I found for order 8001 (Woven Wool Socks):\n\n- Status: Delivered on 2026-06-23\n- Refund eligibility: False (not eligible for a refund at this moment)\n\nReturn window end:\n- Because this order is currently not eligible for a return, there isn\u2019t an active end date I can share.\n- For reference, our standard policy generally allows returns within 30 days of delivery (cw-returns). If an order were eligible, the window would end 30 days after delivery (e.g., 2026-07-23 for a 2026-06-23 delivery).\n\nWould you like me to escalate this to a human to review your eligibility or check if there\u2019s an exception that applies to this order? I can also help with alternative options (like store credit or exchange) if those are available.",
+          "judge_reasons": {},
+          "passed": false
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-006",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        89.1422
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I'll look up your specific order in our system to check its current status, shipment/tracking details, and any delivery exceptions so I can explain what's happening.\nI'll fetch Cascade Audio's store information to see their shipping policies and any overrides that might explain delays or missing tracking for your order.\nI'll look up the help center article on delayed or missing deliveries to confirm the standard guidance and policy references we should share with you.\nI'll search for more specific terms like \"missing package\" and \"delivery delays\" to see if there is a policy about late shipments we can reference.\nThis looks like a missing-delivery scenario that likely needs a human to investigate with the carrier. I\u2019ll open a human support ticket with a concise summary and the order details so a specialist can follow up.\nI\u2019m sorry this has dragged on. I looked up order 335 to see what\u2019s going on and then flagged this for a human follow-up so we can dig into the carrier status and get you a solid update.\n\nHere\u2019s what I found\n- Order: 335 for Cascade Audio \u2013 Handmade Bluetooth Speaker\n- Status: shipped\n- Ordered: 2026-06-29 | Shipped: 2026-06-30 | Delivered: not yet\n- Tracking information: not visible in our system\n- Refund eligibility: False in the system right now\n\nWhat I\u2019ve done\n- I\u2019ve opened a dedicated human follow-up ticket for you so a specialist can investigate with the carrier and Cascade Audio. Ticket ID: 151. The team aims to respond within 24 hours (sla_hours: 24).\n\nWhat this means and what to expect\n- A human agent will check with Cascade Audio and the shipping carrier about the parcel\u2019s location, any delivery exceptions, or a potential lost package.\n- If the package is confirmed lost, our team will determine the next step (replacement or refund per policy). For reference, here are the relevant policy anchors:\n  - Cascade Audio store policy (policy ID store-cascade-audio-policy): Cascade Audio follows the platform\u2019s 30-day return window from delivery, and",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-007",
+      "expected_write": false,
+      "failure_modes": [],
+      "latencies_seconds": [
+        60.3195
+      ],
+      "pass_rate": 1.0,
+      "passes": 1,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [],
+          "final_reply": "I will escalate this to a human agent because changing an account email is an account-change that requires secure verification. I\u2019ll provide the agents with your requested new email and the fact you still have access to the current email so they can verify ownership and complete the update.\nThanks for the details. I\u2019ve escalated your request to a human agent to securely update your account email.\n\nWhat happened just now\n- Ticket created: 151\n- SLA: within 24 hours\n- Change requested: update account primary email to jane.new@example.com\n- You confirmed you still have access to the current email\n\nWhat to expect\n- A human specialist will verify your identity and complete the email update.\n- They may reach out via your current email or the new one (jane.new@example.com) to finalize the change.\n- You\u2019ll likely receive a confirmation once the update is done.\n\nHow you can help speed things up\n- Make sure you can access both your current email and jane.new@example.com.\n- If you have any security details handy (recent orders, account-related questions you answered previously, etc.), have them ready for the agent.\n- Do not share passwords or sensitive credentials in chat\u2014the agent will guide you through secure verification.\n\nWould you like me to add a note to the ticket about your preferred contact method or any specific times you\u2019re available? If you have any other questions, I\u2019m here to help.",
+          "judge_reasons": {},
+          "passed": true
+        }
+      ],
+      "runs": 1
+    },
+    {
+      "case_id": "e-008",
+      "expected_write": false,
+      "failure_modes": [
+        "judge:mishandles_vague_requests"
+      ],
+      "latencies_seconds": [
+        43.0278
+      ],
+      "pass_rate": 0.0,
+      "passes": 0,
+      "run_details": [
+        {
+          "error": null,
+          "failure_modes": [
+            "judge:mishandles_vague_requests"
+          ],
+          "final_reply": "I'll first locate any of your past orders that include an item matching \"heavy duty vase\" so I can identify the correct order and check its refund eligibility under our policy (cw-returns).\nThanks for letting me help with this. I found several past orders that include a heavy duty vase. Here are the matches:\n\n- Order 4455 (store 1) \u2014 Total $240.00 \u2014 Status: Delivered (delivered 2026-06-26) \u2014 Refund eligible: Yes\n- Order 4127 (store 1) \u2014 Total $84.00 \u2014 Status: Delivered (delivered 2026-06-19) \u2014 Refund eligible: Yes\n- Order 3980 (store 1) \u2014 Total $52.00 \u2014 Status: Delivered (delivered 2026-05-17) \u2014 Refund eligible: No\n- Order 2485 (store 2) \u2014 Total $44.25 \u2014 Status: Delivered (delivered 2025-07-02) \u2014 Refund eligible: No\n\nWhat I need from you to proceed:\n- Please tell me which order you want to refund by its order ID. The eligible ones are 4455 and 4127. If you meant a different one, I can still review it, but only eligible ones can be refunded automatically.\n- Optional but helpful: share the reason for the refund (e.g., damaged on arrival, not as described, arrived late, wrong item, changed mind). This helps with processing.\n\nA couple of quick notes:\n- Refunds that are approved are processed against the full order total for the item(s) in question. Large refunds may be queued for human approval, depending on the amount and policy. I\u2019ll handle the initial steps and let you know if a human review is needed.\n\nIf you\u2019d like, I can also pull up the official returns policy (cw-returns) to confirm the exact window and eligibility details before we proceed. Shall I fetch that policy now?",
+          "judge_reasons": {
+            "mishandles_vague_requests": "{\n  \"critique\": \"The agent's initial response does not include a clarifying question before proceeding with the search for orders. The customer requested assistance with a 'heavy duty vase,' which is vague and does not specify an order number or any other identifying detail. Instead of asking a clarifying question to confirm which order the customer meant, the agent assumed that 'heavy duty vase' matched multiple orders and presented them as potential matches. This is a violation of the guidelines, as the agent should have first asked for a specific order ID or additional details before making assumptions. The agent's follow-up request for the order ID is a confirmation of a guess rather than a clarifying question, which is not acceptable. Therefore, the conversation fails to meet the criteria for a Pass.\",\n  \"result\": \"Fail\"\n}"
+          },
+          "passed": false
+        }
+      ],
+      "runs": 1
+    }
+  ],
+  "cost_per_100_conversations_usd": 0.335133,
+  "cost_usd": 0.036865,
+  "created_at": "2026-10-07T20:06:40.574453+00:00",
+  "evaluated_case_runs": 11,
+  "git_commit": "fdcdfbeb4be26337d14c3b74d046b348fa0bd62a",
+  "input_tokens": 138453,
+  "median_latency_seconds": 58.7821,
+  "model": "gpt-5-nano",
+  "output_tokens": 74855,
+  "price_date": "2026-10-02",
+  "prompt_sha256_12": "7b769c29fb8e",
+  "schema_version": 1,
+  "score": 0.6,
+  "split": "development",
+  "test_plan_sha256": null,
+  "write_pass_5": 0
+}
