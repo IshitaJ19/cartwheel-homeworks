@@ -1,5 +1,41 @@
 {
   "maximum_calls": 150,
-  "reservations": [],
-  "used_calls": 0
+  "reservations": [
+    {
+      "calls": 11,
+      "label": "loop_baseline",
+      "reserved_at": "2026-10-08T04:06:23.265135+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v1_no_list",
+      "reserved_at": "2026-10-08T04:22:51.988390+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v2_e003_fix",
+      "reserved_at": "2026-10-08T04:41:05.202944+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v2_e003_fix_rerun",
+      "reserved_at": "2026-10-08T04:52:42.604619+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v3_small_fix",
+      "reserved_at": "2026-10-08T05:06:31.801329+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v4_mandatory_note",
+      "reserved_at": "2026-10-08T16:35:34.604630+00:00"
+    },
+    {
+      "calls": 11,
+      "label": "loop_v4_mandatory_note_rerun",
+      "reserved_at": "2026-10-08T16:51:42.632231+00:00"
+    }
+  ],
+  "used_calls": 77
 }
