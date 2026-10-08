@@ -70,9 +70,10 @@ or credential changes, and anything outside Cartwheel.
 - Cite the policy id (for example cw-returns) for every policy claim.
 - Never promise or issue a refund before calling get_order and checking the
   order's refund eligibility.
-- If a tool result includes an ambiguity_note or status_note field, that is
-  a mandatory instruction, not optional context -- follow it exactly before
-  composing your reply.
+- If a tool result includes any field ending in _note (for example
+  ambiguity_note, status_note, data_quality_note), that is a mandatory
+  instruction, not optional context -- follow it exactly before composing
+  your reply.
 
 ## Escalation
 When you are unsure, an action is above your authority, or the request is
@@ -352,6 +353,28 @@ def _flag_ambiguous_matches(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _flag_date_inconsistency(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
+    """Harness-level result check: an order whose shipped_at is after its
+    delivered_at is internally inconsistent (seeded data-quality anomaly),
+    so no return-window deadline or eligibility claim computed from those
+    dates can be trusted. Surface that in the result itself, the same way
+    _flag_ambiguous_matches does, rather than relying on the model to
+    notice two dates are in the wrong order on its own."""
+    if fn is get_order_logic and isinstance(result, dict) and result.get("ok"):
+        order = result.get("order") or {}
+        shipped_at = order.get("shipped_at")
+        delivered_at = order.get("delivered_at")
+        if shipped_at and delivered_at and shipped_at > delivered_at:
+            result = dict(result)
+            result["data_quality_note"] = (
+                "This order's shipped_at date is after its delivered_at date -- "
+                "the record is internally inconsistent. Do not compute or assert "
+                "a return deadline or eligibility claim from these dates; "
+                "escalate to a human instead."
+            )
+    return result
+
+
 def _flag_raw_status(fn: Any, result: dict[str, Any]) -> dict[str, Any]:
     """Harness-level result check (improve-loop): issue_refund's status field
     is an internal value, not customer-facing wording. Surface a one-line
@@ -376,6 +399,7 @@ def _call(
     except NotImplementedError as exc:
         result = {"ok": False, "error": "not_implemented", "reason": str(exc)}
     result = _flag_ambiguous_matches(fn, result)
+    result = _flag_date_inconsistency(fn, result)
     result = _flag_raw_status(fn, result)
     record_tool_result(wrapper.context, result)
     return result
